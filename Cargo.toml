@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/cir",
+    "src/cir-parse",
+]

@@ -1,0 +1,13 @@
+[package]
+name = "cir-parse"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+peg = "0.7"
+codespan = "0.11"
+
+[dependencies.smol_str]
+version = "0.1.21"
+default-features = false
