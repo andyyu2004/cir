@@ -43,6 +43,12 @@ peg::parser! {
                 kind: kind.node,
             }
         }
+
+        rule _ = [' ' | '\t' | '\n' | '\r']*
+
+        pub rule value_def() -> ValueDef = _ "let" _ name:lname() _ "::"  _ ty:ty() _ "=" _ expr:expr() _ {
+            ValueDef { name, expr, ty }
+        }
     }
 }
 
@@ -88,6 +94,21 @@ pub enum TyKind {
 pub struct Name {
     pub span: Span,
     pub symbol: SmolStr,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct Item {}
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum ItemKind {
+    ValueDef(ValueDef),
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct ValueDef {
+    pub name: Name,
+    pub ty: Ty,
+    pub expr: Expr,
 }
 
 #[cfg(test)]
@@ -138,6 +159,27 @@ mod tests {
                 })
             }
         );
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_value_def() -> anyhow::Result<()> {
+        let value_def = ValueDef {
+            name: Name { span: Span::new(5, 6), symbol: "x".into() },
+            ty: Ty {
+                span: Span::new(10, 11),
+                kind: TyKind::Var(TyVar {
+                    name: Name { span: Span::new(10, 11), symbol: "a".into() },
+                }),
+            },
+            expr: Expr {
+                span: Span::new(14, 15),
+                kind: ExprKind::Var(Var {
+                    name: Name { span: Span::new(14, 15), symbol: "k".into() },
+                }),
+            },
+        };
+        assert_eq!(cirparser::value_def(" let x :: a = k ")?, value_def);
         Ok(())
     }
 }
