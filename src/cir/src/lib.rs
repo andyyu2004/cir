@@ -42,8 +42,19 @@ pub type Expr = Idx<ExprData>;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum ExprData {
-    Path(Path),
+    Var(Debruijn),
     Lit(Lit),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Debruijn {
+    depth: usize,
+}
+
+impl Debruijn {
+    pub const fn new(depth: usize) -> Self {
+        Self { depth }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

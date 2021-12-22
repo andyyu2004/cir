@@ -13,15 +13,10 @@ pub struct Spanned<T> {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct Expr {
-    pub span: Span,
-    pub kind: ExprKind,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum ExprKind {
+pub enum Expr {
     Var(Var),
     Lit(Literal),
+    Lambda(Name, Box<Expr>),
 }
 
 #[derive(Debug, PartialEq, Eq)]

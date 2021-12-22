@@ -25,23 +25,17 @@ SourceFile {
                             },
                         },
                     ),
-                    expr: Expr {
-                        span: Span {
-                            start: ByteIndex(14),
-                            end: ByteIndex(15),
-                        },
-                        kind: Var(
-                            Var {
-                                name: Name {
-                                    span: Span {
-                                        start: ByteIndex(14),
-                                        end: ByteIndex(15),
-                                    },
-                                    symbol: "k",
+                    expr: Var(
+                        Var {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(14),
+                                    end: ByteIndex(15),
                                 },
+                                symbol: "k",
                             },
-                        ),
-                    },
+                        },
+                    ),
                 },
             ),
         },
@@ -70,23 +64,17 @@ SourceFile {
                             },
                         },
                     ),
-                    expr: Expr {
-                        span: Span {
-                            start: ByteIndex(30),
-                            end: ByteIndex(31),
-                        },
-                        kind: Var(
-                            Var {
-                                name: Name {
-                                    span: Span {
-                                        start: ByteIndex(30),
-                                        end: ByteIndex(31),
-                                    },
-                                    symbol: "g",
+                    expr: Var(
+                        Var {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(30),
+                                    end: ByteIndex(31),
                                 },
+                                symbol: "g",
                             },
-                        ),
-                    },
+                        },
+                    ),
                 },
             ),
         },

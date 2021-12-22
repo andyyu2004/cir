@@ -41,10 +41,7 @@ fn test_parse_lit() -> anyhow::Result<()> {
 fn test_parse_expr() -> anyhow::Result<()> {
     assert_eq!(
         cirparser::expr("x")?,
-        Expr {
-            span: Span::new(0, 1),
-            kind: ExprKind::Var(Var { name: Name { span: Span::new(0, 1), symbol: "x".into() } })
-        }
+        Expr::Var(Var { name: Name { span: Span::new(0, 1), symbol: "x".into() } })
     );
     Ok(())
 }
@@ -64,10 +61,7 @@ fn test_parse_value_def() -> anyhow::Result<()> {
     let value_def = ValueDef {
         name: Name { span: Span::new(5, 6), symbol: "x".into() },
         ty: Ty::Var(TyVar { name: Name { span: Span::new(10, 11), symbol: "a".into() } }),
-        expr: Expr {
-            span: Span::new(14, 15),
-            kind: ExprKind::Var(Var { name: Name { span: Span::new(14, 15), symbol: "k".into() } }),
-        },
+        expr: Expr::Var(Var { name: Name { span: Span::new(14, 15), symbol: "k".into() } }),
     };
     assert_eq!(cirparser::value_def(" let x :: a = k ")?, value_def);
     Ok(())

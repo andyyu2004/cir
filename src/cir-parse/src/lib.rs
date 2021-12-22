@@ -48,17 +48,11 @@ peg::parser! {
             Name::new(s.span, s.node)
         }
 
-        pub rule expr_kind() -> ExprKind = precedence! {
-            lit:literal() { ExprKind::Lit(lit) }
-            name:lname() { ExprKind::Var(Var { name }) }
+        pub rule expr() -> Expr = precedence! {
+            lit:literal() { Expr::Lit(lit) }
+            name:lname() { Expr::Var(Var { name }) }
         }
 
-        pub rule expr() -> Expr = kind:spanned(<expr_kind()>) {
-            Expr {
-                span: kind.span,
-                kind: kind.node,
-            }
-        }
 
         pub rule ty_atom() -> Ty = precedence! {
             "bool"  { Ty::Scalar(cir::Scalar::Bool) }

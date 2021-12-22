@@ -1,4 +1,4 @@
-use cir::Path;
+use cir::{Debruijn, Path};
 use la_arena::{Arena, Idx};
 
 use crate::ast::{self};
@@ -50,12 +50,13 @@ impl LowerCtxt {
     }
 
     fn lower_expr(&mut self, expr: &ast::Expr) -> cir::Expr {
-        let expr = match &expr.kind {
-            ast::ExprKind::Var(var) => cir::ExprData::Path(Path::single(var.name.clone())),
-            ast::ExprKind::Lit(lit) => cir::ExprData::Lit(match lit.kind {
+        let expr = match &expr {
+            ast::Expr::Var(var) => cir::ExprData::Var(todo!()),
+            ast::Expr::Lit(lit) => cir::ExprData::Lit(match lit.kind {
                 ast::LiteralKind::Int(i) => cir::Lit::Int(i),
                 ast::LiteralKind::Bool(b) => cir::Lit::Bool(b),
             }),
+            ast::Expr::Lambda(_, _) => todo!(),
         };
         self.exprs.alloc(expr)
     }
