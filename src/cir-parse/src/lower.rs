@@ -37,6 +37,7 @@ impl LowerCtxt {
             ast::Ty::Var(_) => todo!(),
             ast::Ty::Scalar(scalar) => cir::TyKind::Scalar(*scalar),
             ast::Ty::Fn(l, r) => cir::TyKind::Fn(self.lower_ty(l), self.lower_ty(r)),
+            ast::Ty::ForAll(_, _) => todo!(),
         };
         kind.intern()
     }

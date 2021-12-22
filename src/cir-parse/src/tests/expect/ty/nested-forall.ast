@@ -1,0 +1,42 @@
+ForAll(
+    Name {
+        span: Span {
+            start: ByteIndex(8),
+            end: ByteIndex(9),
+        },
+        symbol: "a",
+    },
+    ForAll(
+        Name {
+            span: Span {
+                start: ByteIndex(18),
+                end: ByteIndex(19),
+            },
+            symbol: "b",
+        },
+        Fn(
+            Var(
+                TyVar {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(21),
+                            end: ByteIndex(22),
+                        },
+                        symbol: "a",
+                    },
+                },
+            ),
+            Var(
+                TyVar {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(26),
+                            end: ByteIndex(27),
+                        },
+                        symbol: "b",
+                    },
+                },
+            ),
+        ),
+    ),
+)

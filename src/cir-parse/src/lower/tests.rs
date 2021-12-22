@@ -20,6 +20,6 @@ fn test_lower_value_def() -> anyhow::Result<()> {
     }
 
     lower!("let x :: int = 1");
-    lower!("let f :: (a -> b) -> a -> b = \\f -> \\x -> f x");
+    // lower!("let f :: (a -> b) -> a -> b = \\f -> \\x -> f x");
     Ok(())
 }

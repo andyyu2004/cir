@@ -47,6 +47,7 @@ pub enum Ty {
     Var(TyVar),
     Scalar(cir::Scalar),
     Fn(Box<Ty>, Box<Ty>),
+    ForAll(Name, Box<Ty>),
 }
 
 #[derive(Debug, PartialEq, Eq)]

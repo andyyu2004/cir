@@ -75,10 +75,15 @@ fn test_parse_lambda() -> anyhow::Result<()> {
 #[test]
 fn test_parse_ty() -> anyhow::Result<()> {
     assert_eq!(cirparser::ty("int")?, ast::Ty::Scalar(cir::Scalar::Int));
+    assert_eq!(cirparser::ty("((int))")?, ast::Ty::Scalar(cir::Scalar::Int));
     assert_eq!(cirparser::ty("bool")?, ast::Ty::Scalar(cir::Scalar::Bool));
     expect_file!["tests/expect/ty/arrow-simple.ast"].assert_debug_eq(&cirparser::ty(" a -> b ")?);
     expect_file!["tests/expect/ty/arrow-right-assoc.ast"]
         .assert_debug_eq(&cirparser::ty(" a -> b -> c ")?);
+    expect_file!["tests/expect/ty/forall.ast"]
+        .assert_debug_eq(&cirparser::ty(" forall a.a -> a ")?);
+    expect_file!["tests/expect/ty/nested-forall.ast"]
+        .assert_debug_eq(&cirparser::ty(" forall a. forall b. a -> b")?);
     Ok(())
 }
 

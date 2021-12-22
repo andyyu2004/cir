@@ -64,6 +64,8 @@ peg::parser! {
         rule ty_atom() -> Ty = precedence! {
             "bool"  { Ty::Scalar(cir::Scalar::Bool) }
             "int" { Ty::Scalar(cir::Scalar::Int) }
+            "forall" _ var:lname() "." ty:ty() { Ty::ForAll(var, Box::new(ty)) }
+            "(" ty:ty() ")" { ty }
             tyvar:lname() { Ty::Var(TyVar { name: tyvar }) }
         }
 
