@@ -1,0 +1,94 @@
+SourceFile {
+    items: [
+        Item {
+            span: Span {
+                start: ByteIndex(1),
+                end: ByteIndex(17),
+            },
+            kind: ValueDef(
+                ValueDef {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(5),
+                            end: ByteIndex(6),
+                        },
+                        symbol: "x",
+                    },
+                    ty: Var(
+                        TyVar {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(10),
+                                    end: ByteIndex(11),
+                                },
+                                symbol: "a",
+                            },
+                        },
+                    ),
+                    expr: Expr {
+                        span: Span {
+                            start: ByteIndex(14),
+                            end: ByteIndex(15),
+                        },
+                        kind: Var(
+                            Var {
+                                name: Name {
+                                    span: Span {
+                                        start: ByteIndex(14),
+                                        end: ByteIndex(15),
+                                    },
+                                    symbol: "k",
+                                },
+                            },
+                        ),
+                    },
+                },
+            ),
+        },
+        Item {
+            span: Span {
+                start: ByteIndex(17),
+                end: ByteIndex(31),
+            },
+            kind: ValueDef(
+                ValueDef {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(21),
+                            end: ByteIndex(22),
+                        },
+                        symbol: "y",
+                    },
+                    ty: Var(
+                        TyVar {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(26),
+                                    end: ByteIndex(27),
+                                },
+                                symbol: "b",
+                            },
+                        },
+                    ),
+                    expr: Expr {
+                        span: Span {
+                            start: ByteIndex(30),
+                            end: ByteIndex(31),
+                        },
+                        kind: Var(
+                            Var {
+                                name: Name {
+                                    span: Span {
+                                        start: ByteIndex(30),
+                                        end: ByteIndex(31),
+                                    },
+                                    symbol: "g",
+                                },
+                            },
+                        ),
+                    },
+                },
+            ),
+        },
+    ],
+}

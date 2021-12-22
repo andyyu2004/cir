@@ -1,0 +1,45 @@
+Item {
+    span: Span {
+        start: ByteIndex(1),
+        end: ByteIndex(16),
+    },
+    kind: ValueDef(
+        ValueDef {
+            name: Name {
+                span: Span {
+                    start: ByteIndex(5),
+                    end: ByteIndex(6),
+                },
+                symbol: "x",
+            },
+            ty: Var(
+                TyVar {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(10),
+                            end: ByteIndex(11),
+                        },
+                        symbol: "a",
+                    },
+                },
+            ),
+            expr: Expr {
+                span: Span {
+                    start: ByteIndex(14),
+                    end: ByteIndex(15),
+                },
+                kind: Var(
+                    Var {
+                        name: Name {
+                            span: Span {
+                                start: ByteIndex(14),
+                                end: ByteIndex(15),
+                            },
+                            symbol: "k",
+                        },
+                    },
+                ),
+            },
+        },
+    ),
+}

@@ -1,0 +1,37 @@
+Fn(
+    Var(
+        TyVar {
+            name: Name {
+                span: Span {
+                    start: ByteIndex(1),
+                    end: ByteIndex(2),
+                },
+                symbol: "a",
+            },
+        },
+    ),
+    Fn(
+        Var(
+            TyVar {
+                name: Name {
+                    span: Span {
+                        start: ByteIndex(6),
+                        end: ByteIndex(7),
+                    },
+                    symbol: "b",
+                },
+            },
+        ),
+        Var(
+            TyVar {
+                name: Name {
+                    span: Span {
+                        start: ByteIndex(11),
+                        end: ByteIndex(12),
+                    },
+                    symbol: "c",
+                },
+            },
+        ),
+    ),
+)

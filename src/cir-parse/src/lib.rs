@@ -1,11 +1,19 @@
+mod ast;
+mod lower;
+
+use ast::*;
+use cir::Name;
+
 use codespan::Span;
-use smol_str::SmolStr;
 
 peg::parser! {
     grammar cirparser() for str {
         rule lower() -> &'input str = s:$(['_' | 'a'..='z'] alphanumeric()?) { s }
         rule upper() -> &'input str = s:$(['A'..='Z'] alphanumeric()?) { s }
         rule alphanumeric() -> &'input str = s:$(['_' | 'a'..='z' | 'A'..='Z' | '0'..='9']+) { s }
+        rule integer() -> i64 = n:$("-"?['0'..='9']+) { n.parse().unwrap() }
+        rule bool() -> bool = b:$("false" / "true") { b.parse().unwrap() }
+        rule _ = [' ' | '\t' | '\n' | '\r']*
 
         rule spanned<T>(t: rule<T>) -> Spanned<T> = start:position!() node:t() end:position!() {
             Spanned {
@@ -14,16 +22,35 @@ peg::parser! {
             }
         }
 
+        pub rule integer_literal() -> Literal = i:spanned(<integer()>) {
+            Literal {
+                span: i.span,
+                kind: LiteralKind::Int(i.node),
+            }
+        }
+
+        pub rule boolean_literal() -> Literal = b:spanned(<bool()>) {
+            Literal {
+                span: b.span,
+                kind: LiteralKind::Bool(b.node),
+            }
+        }
+
+        pub rule literal() -> Literal = _ lit:(integer_literal() / boolean_literal()) _ {
+            lit
+        }
+
         pub rule lname() -> Name = s:spanned(<lower()>) {
-            Name { span: s.span, symbol: SmolStr::new(s.node) }
+            Name::new(s.span, s.node)
         }
 
         pub rule uname() -> Name = s:spanned(<upper()>) {
-            Name { span: s.span, symbol: SmolStr::new(s.node) }
+            Name::new(s.span, s.node)
         }
 
         pub rule expr_kind() -> ExprKind = precedence! {
-            var:spanned(<lname()>) { ExprKind::Var(Var { name: var.node }) }
+            lit:literal() { ExprKind::Lit(lit) }
+            name:lname() { ExprKind::Var(Var { name }) }
         }
 
         pub rule expr() -> Expr = kind:spanned(<expr_kind()>) {
@@ -33,153 +60,38 @@ peg::parser! {
             }
         }
 
-        pub rule ty_kind() -> TyKind = precedence! {
-            tyvar:spanned(<lname()>) { TyKind::Var(TyVar { name: tyvar.node }) }
+        pub rule ty_atom() -> Ty = precedence! {
+            "bool"  { Ty::Scalar(cir::Scalar::Bool) }
+            "int" { Ty::Scalar(cir::Scalar::Int) }
+            tyvar:lname() { Ty::Var(TyVar { name: tyvar }) }
         }
 
-        pub rule ty() -> Ty = kind:spanned(<ty_kind()>) {
-            Ty {
-                span: kind.span,
-                kind: kind.node,
-            }
+        pub rule ty() -> Ty= precedence! {
+             l:@ _ "->" _ r:(@)   { Ty::Fn(Box::new(l), Box::new(r)) }
+             --
+            _ atom:ty_atom() _ { atom }
         }
-
-        rule _ = [' ' | '\t' | '\n' | '\r']*
 
         pub rule value_def() -> ValueDef = _ "let" _ name:lname() _ "::"  _ ty:ty() _ "=" _ expr:expr() _ {
             ValueDef { name, expr, ty }
         }
+
+        pub rule value_def_item() -> Item = _ def:spanned(<value_def()>) _ {
+            Item {
+                span: def.span,
+                kind: ItemKind::ValueDef(def.node)
+            }
+        }
+
+        pub rule item() -> Item = item:value_def_item() {
+            item
+        }
+
+        pub rule source_file() -> SourceFile = _ items:(items:item())* {
+            SourceFile { items }
+        }
     }
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct Spanned<T> {
-    pub span: Span,
-    pub node: T,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct Expr {
-    span: Span,
-    kind: ExprKind,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum ExprKind {
-    Var(Var),
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct Ty {
-    span: Span,
-    kind: TyKind,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct Var {
-    name: Name,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct TyVar {
-    name: Name,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum TyKind {
-    Var(TyVar),
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct Name {
-    pub span: Span,
-    pub symbol: SmolStr,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct Item {}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum ItemKind {
-    ValueDef(ValueDef),
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct ValueDef {
-    pub name: Name,
-    pub ty: Ty,
-    pub expr: Expr,
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_lname() -> anyhow::Result<()> {
-        assert_eq!(cirparser::lname("x")?.symbol, "x");
-        assert_eq!(cirparser::lname("lowerIdent")?.symbol, "lowerIdent");
-        assert_eq!(cirparser::lname("lower123")?.symbol, "lower123");
-        assert_eq!(cirparser::lname("_lower")?.symbol, "_lower");
-        assert!(cirparser::lname("Upper123").is_err());
-        Ok(())
-    }
-
-    #[test]
-    fn test_parse_uname() -> anyhow::Result<()> {
-        assert_eq!(cirparser::uname("X")?.symbol, "X");
-        assert_eq!(cirparser::uname("UpperIdent")?.symbol, "UpperIdent");
-        assert_eq!(cirparser::uname("Upper123")?.symbol, "Upper123");
-        assert!(cirparser::uname("lower123").is_err());
-        Ok(())
-    }
-
-    #[test]
-    fn test_parse_expr() -> anyhow::Result<()> {
-        assert_eq!(
-            cirparser::expr("x")?,
-            Expr {
-                span: Span::new(0, 1),
-                kind: ExprKind::Var(Var {
-                    name: Name { span: Span::new(0, 1), symbol: "x".into() }
-                })
-            }
-        );
-        Ok(())
-    }
-
-    #[test]
-    fn test_parse_ty() -> anyhow::Result<()> {
-        assert_eq!(
-            cirparser::ty("a")?,
-            Ty {
-                span: Span::new(0, 1),
-                kind: TyKind::Var(TyVar {
-                    name: Name { span: Span::new(0, 1), symbol: "a".into() }
-                })
-            }
-        );
-        Ok(())
-    }
-
-    #[test]
-    fn test_parse_value_def() -> anyhow::Result<()> {
-        let value_def = ValueDef {
-            name: Name { span: Span::new(5, 6), symbol: "x".into() },
-            ty: Ty {
-                span: Span::new(10, 11),
-                kind: TyKind::Var(TyVar {
-                    name: Name { span: Span::new(10, 11), symbol: "a".into() },
-                }),
-            },
-            expr: Expr {
-                span: Span::new(14, 15),
-                kind: ExprKind::Var(Var {
-                    name: Name { span: Span::new(14, 15), symbol: "k".into() },
-                }),
-            },
-        };
-        assert_eq!(cirparser::value_def(" let x :: a = k ")?, value_def);
-        Ok(())
-    }
-}
+mod tests;

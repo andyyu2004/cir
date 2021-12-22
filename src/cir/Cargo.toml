@@ -3,6 +3,16 @@ name = "cir"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+codespan = "0.11"
+la-arena = "0.2"
+smallvec = "1"
+rustc-hash = "1"
+
+[dependencies.dashmap]
+version = "5"
+features = ["raw-api"]
+
+[dependencies.smol_str]
+version = "0.1.21"
+default-features = false
