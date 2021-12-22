@@ -44,6 +44,8 @@ pub type Expr = Idx<ExprData>;
 pub enum ExprData {
     Var(Debruijn),
     Lit(Lit),
+    Lambda(Expr),
+    App(Expr, Expr),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

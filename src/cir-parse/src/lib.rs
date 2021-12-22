@@ -48,13 +48,20 @@ peg::parser! {
             Name::new(s.span, s.node)
         }
 
-        pub rule expr() -> Expr = precedence! {
+        rule expr_atom() -> Expr = precedence! {
+            "(" expr:expr() ")" { expr }
+            "\\" var:lname() _ "->" _ expr:expr() { Expr::Lambda(var, Box::new(expr)) }
             lit:literal() { Expr::Lit(lit) }
             name:lname() { Expr::Var(Var { name }) }
         }
 
+        pub rule expr() -> Expr = precedence! {
+            f:(@) " " x:@ { Expr::App(Box::new(f), Box::new(x)) }
+            _ atom:expr_atom() { atom }
+        }
 
-        pub rule ty_atom() -> Ty = precedence! {
+
+        rule ty_atom() -> Ty = precedence! {
             "bool"  { Ty::Scalar(cir::Scalar::Bool) }
             "int" { Ty::Scalar(cir::Scalar::Int) }
             tyvar:lname() { Ty::Var(TyVar { name: tyvar }) }

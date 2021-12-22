@@ -38,7 +38,7 @@ fn test_parse_lit() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_parse_expr() -> anyhow::Result<()> {
+fn test_parse_expr_lit() -> anyhow::Result<()> {
     assert_eq!(
         cirparser::expr("x")?,
         Expr::Var(Var { name: Name { span: Span::new(0, 1), symbol: "x".into() } })
@@ -47,11 +47,37 @@ fn test_parse_expr() -> anyhow::Result<()> {
 }
 
 #[test]
+fn test_parse_expr_group() -> anyhow::Result<()> {
+    expect_file!["tests/expect/expr/group.ast"]
+        .assert_debug_eq(&cirparser::expr("(\\x -> x) (\\y -> y)")?);
+    Ok(())
+}
+
+#[test]
+fn test_parse_expr_app() -> anyhow::Result<()> {
+    expect_file!["tests/expect/expr/app.ast"].assert_debug_eq(&cirparser::expr("f x")?);
+    expect_file!["tests/expect/expr/app-left-assoc.ast"]
+        .assert_debug_eq(&cirparser::expr("f x y")?);
+    expect_file!["tests/expect/expr/lambda-app.ast"]
+        .assert_debug_eq(&cirparser::expr("(\\x -> x) y")?);
+    assert_ne!(cirparser::expr("(\\x -> x) y")?, cirparser::expr("\\x -> x y")?);
+    Ok(())
+}
+
+#[test]
+fn test_parse_lambda() -> anyhow::Result<()> {
+    expect_file!["tests/expect/expr/lambda.ast"].assert_debug_eq(&cirparser::expr("\\x -> x")?);
+    expect_file!["tests/expect/expr/nested-lambda.ast"]
+        .assert_debug_eq(&cirparser::expr("\\x -> \\y -> x")?);
+    Ok(())
+}
+
+#[test]
 fn test_parse_ty() -> anyhow::Result<()> {
     assert_eq!(cirparser::ty("int")?, ast::Ty::Scalar(cir::Scalar::Int));
     assert_eq!(cirparser::ty("bool")?, ast::Ty::Scalar(cir::Scalar::Bool));
     expect_file!["tests/expect/ty/arrow-simple.ast"].assert_debug_eq(&cirparser::ty(" a -> b ")?);
-    expect_file!["tests/expect/ty/arrow-right-associative.ast"]
+    expect_file!["tests/expect/ty/arrow-right-assoc.ast"]
         .assert_debug_eq(&cirparser::ty(" a -> b -> c ")?);
     Ok(())
 }

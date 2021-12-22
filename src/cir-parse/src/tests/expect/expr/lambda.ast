@@ -1,0 +1,20 @@
+Lambda(
+    Name {
+        span: Span {
+            start: ByteIndex(1),
+            end: ByteIndex(2),
+        },
+        symbol: "x",
+    },
+    Var(
+        Var {
+            name: Name {
+                span: Span {
+                    start: ByteIndex(6),
+                    end: ByteIndex(7),
+                },
+                symbol: "x",
+            },
+        },
+    ),
+)

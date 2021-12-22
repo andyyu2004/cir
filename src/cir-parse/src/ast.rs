@@ -17,6 +17,7 @@ pub enum Expr {
     Var(Var),
     Lit(Literal),
     Lambda(Name, Box<Expr>),
+    App(Box<Expr>, Box<Expr>),
 }
 
 #[derive(Debug, PartialEq, Eq)]

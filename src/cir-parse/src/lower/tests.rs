@@ -11,8 +11,15 @@ fn test_lower_program() -> anyhow::Result<()> {
 
 #[test]
 fn test_lower_value_def() -> anyhow::Result<()> {
-    let value_def = crate::cirparser::value_def("let x::int = 1")?;
-    let mut lcx = LowerCtxt::default();
-    lcx.lower_value_def(&value_def);
+    macro_rules! lower {
+        ($s:expr) => {{
+            let value_def = crate::cirparser::value_def($s)?;
+            let mut lcx = LowerCtxt::default();
+            lcx.lower_value_def(&value_def);
+        }};
+    }
+
+    lower!("let x :: int = 1");
+    lower!("let f :: (a -> b) -> a -> b = \\f -> \\x -> f x");
     Ok(())
 }
