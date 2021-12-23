@@ -57,10 +57,15 @@ impl LowerCtxt {
                 ast::LiteralKind::Int(i) => cir::Lit::Int(i),
                 ast::LiteralKind::Bool(b) => cir::Lit::Bool(b),
             }),
-            ast::Expr::Lambda(_, expr) => cir::ExprData::Lambda(self.lower_expr(expr)),
+            ast::Expr::Lambda(binder, expr) =>
+                self.in_binder(binder, |lcx| cir::ExprData::Lambda(lcx.lower_expr(expr))),
             ast::Expr::App(f, x) => cir::ExprData::App(self.lower_expr(f), self.lower_expr(x)),
         };
         self.exprs.alloc(expr)
+    }
+
+    fn in_binder<R>(&mut self, binder: &cir::Name, f: impl FnOnce(&mut Self) -> R) -> R {
+        f(self)
     }
 
     fn lower_body(&mut self, expr: &ast::Expr) -> cir::Body {
