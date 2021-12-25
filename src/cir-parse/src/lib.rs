@@ -52,7 +52,7 @@ peg::parser! {
             "(" expr:expr() ")" { expr }
             "\\" var:lname() _ "->" _ expr:expr() { Expr::Lambda(var, Box::new(expr)) }
             lit:literal() { Expr::Lit(lit) }
-            name:lname() { Expr::Var(Var { name }) }
+            name:lname() { Expr::Var(Var::Id { name }) }
         }
 
         pub rule expr() -> Expr = precedence! {

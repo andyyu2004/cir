@@ -24,7 +24,7 @@ Item {
                 },
             ),
             expr: Var(
-                Var {
+                Id {
                     name: Name {
                         span: Span {
                             start: ByteIndex(14),

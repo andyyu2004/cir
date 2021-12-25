@@ -1,7 +1,7 @@
 App(
     App(
         Var(
-            Var {
+            Id {
                 name: Name {
                     span: Span {
                         start: ByteIndex(0),
@@ -12,7 +12,7 @@ App(
             },
         ),
         Var(
-            Var {
+            Id {
                 name: Name {
                     span: Span {
                         start: ByteIndex(2),
@@ -24,7 +24,7 @@ App(
         ),
     ),
     Var(
-        Var {
+        Id {
             name: Name {
                 span: Span {
                     start: ByteIndex(4),

@@ -7,7 +7,7 @@ Lambda(
         symbol: "x",
     },
     Var(
-        Var {
+        Id {
             name: Name {
                 span: Span {
                     start: ByteIndex(6),

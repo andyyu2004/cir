@@ -33,8 +33,11 @@ pub enum LiteralKind {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct Var {
-    pub name: Name,
+pub enum Var {
+    /// Value level variable
+    Id { name: Name },
+    /// Type level variable
+    Ty(TyVar),
 }
 
 #[derive(Debug, PartialEq, Eq)]
