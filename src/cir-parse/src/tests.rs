@@ -86,6 +86,8 @@ fn test_parse_lambda() -> anyhow::Result<()> {
     expect_file!["tests/expect/expr/lambda.ast"].assert_debug_eq(&cirparser::expr("\\x: a. x")?);
     expect_file!["tests/expect/expr/nested-lambda.ast"]
         .assert_debug_eq(&cirparser::expr("\\x: a. \\y: b. x")?);
+    expect_file!["tests/expect/expr/type-lambda.ast"]
+        .assert_debug_eq(&cirparser::expr("\\@a. \\x: a. x")?);
     Ok(())
 }
 
