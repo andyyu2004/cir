@@ -1,0 +1,31 @@
+App(
+    Lambda(
+        Ty(
+            TyVar {
+                name: Name {
+                    span: Span {
+                        start: ByteIndex(3),
+                        end: ByteIndex(4),
+                    },
+                    symbol: "a",
+                },
+            },
+        ),
+        Lit(
+            Literal {
+                span: Span {
+                    start: ByteIndex(6),
+                    end: ByteIndex(7),
+                },
+                kind: Int(
+                    0,
+                ),
+            },
+        ),
+    ),
+    Type(
+        Scalar(
+            Int,
+        ),
+    ),
+)

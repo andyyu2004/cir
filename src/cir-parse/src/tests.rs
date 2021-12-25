@@ -61,6 +61,10 @@ fn test_parse_expr_app() -> anyhow::Result<()> {
     expect_file!["tests/expect/expr/lambda-app.ast"]
         .assert_debug_eq(&cirparser::expr("(\\x: a. x) y")?);
     assert_ne!(cirparser::expr("(\\x: b. x) y")?, cirparser::expr("\\x: b. x y")?);
+    // expect_file!["tests/expect/expr/type-lambda-app.ast"]
+    //     .assert_debug_eq(&cirparser::expr("(\\@a. \\x: a. x) @Int y")?);
+    expect_file!["tests/expect/expr/type-lambda-app.ast"]
+        .assert_debug_eq(&cirparser::expr("(\\@a. 0) @Int")?);
     Ok(())
 }
 

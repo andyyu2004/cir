@@ -68,6 +68,7 @@ peg::parser! {
         rule expr_atom() -> Expr = precedence! {
             "(" expr:expr() ")" { expr }
             "\\" _ binder:binder() _ "." _ expr:expr() { Expr::Lambda(binder, Box::new(expr)) }
+            "@" ty:ty() { Expr::Type(ty) }
             lit:literal() { Expr::Lit(lit) }
             name:lname() { Expr::Var(Var::Val { name }) }
         }
