@@ -46,6 +46,7 @@ pub enum ExprData {
     Lit(Lit),
     Lambda(Expr),
     App(Expr, Expr),
+    Type(Ty),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

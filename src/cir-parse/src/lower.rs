@@ -32,12 +32,12 @@ impl LowerCtxt {
         self.value_defs.alloc(value_def)
     }
 
-    fn lower_ty(&self, ty: &ast::Ty) -> cir::Ty {
+    fn lower_ty(&self, ty: &ast::Type) -> cir::Ty {
         let kind = match &ty {
-            ast::Ty::Var(_) => todo!(),
-            ast::Ty::Scalar(scalar) => cir::TyKind::Scalar(*scalar),
-            ast::Ty::Fn(l, r) => cir::TyKind::Fn(self.lower_ty(l), self.lower_ty(r)),
-            ast::Ty::ForAll(_, _) => todo!(),
+            ast::Type::Var(_) => todo!(),
+            ast::Type::Scalar(scalar) => cir::TyKind::Scalar(*scalar),
+            ast::Type::Fn(l, r) => cir::TyKind::Fn(self.lower_ty(l), self.lower_ty(r)),
+            ast::Type::ForAll(_, _) => todo!(),
         };
         kind.intern()
     }
@@ -46,7 +46,7 @@ impl LowerCtxt {
         todo!()
     }
 
-    fn lower_ty_fn(&mut self, l: &ast::Ty, r: &ast::Ty) -> cir::Ty {
+    fn lower_ty_fn(&mut self, l: &ast::Type, r: &ast::Type) -> cir::Ty {
         todo!()
     }
 
@@ -60,6 +60,7 @@ impl LowerCtxt {
             ast::Expr::Lambda(binder, expr) =>
                 self.in_binder(binder, |lcx| cir::ExprData::Lambda(lcx.lower_expr(expr))),
             ast::Expr::App(f, x) => cir::ExprData::App(self.lower_expr(f), self.lower_expr(x)),
+            ast::Expr::Type(ty) => cir::ExprData::Type(self.lower_ty(ty)),
         };
         self.exprs.alloc(expr)
     }

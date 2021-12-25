@@ -18,11 +18,12 @@ pub enum Expr {
     Lit(Literal),
     Lambda(Binder, Box<Expr>),
     App(Box<Expr>, Box<Expr>),
+    Type(Type),
 }
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Binder {
-    Val(Name, Ty),
+    Val(Name, Type),
     Ty(TyVar),
 }
 
@@ -52,11 +53,11 @@ pub struct TyVar {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum Ty {
+pub enum Type {
     Var(TyVar),
     Scalar(cir::Scalar),
-    Fn(Box<Ty>, Box<Ty>),
-    ForAll(Name, Box<Ty>),
+    Fn(Box<Type>, Box<Type>),
+    ForAll(Name, Box<Type>),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -73,6 +74,6 @@ pub enum ItemKind {
 #[derive(Debug, PartialEq, Eq)]
 pub struct ValueDef {
     pub name: Name,
-    pub ty: Ty,
+    pub ty: Type,
     pub expr: Expr,
 }

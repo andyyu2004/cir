@@ -70,7 +70,7 @@ fn test_parse_binder() -> anyhow::Result<()> {
         cirparser::binder("x: a")?,
         Binder::Val(
             Name::new(Span::new(0, 1), "x"),
-            Ty::Var(TyVar { name: Name::new(Span::new(3, 4), "a") })
+            Type::Var(TyVar { name: Name::new(Span::new(3, 4), "a") })
         )
     );
 
@@ -93,12 +93,12 @@ fn test_parse_lambda() -> anyhow::Result<()> {
 
 #[test]
 fn test_parse_ty() -> anyhow::Result<()> {
-    assert_eq!(cirparser::ty("int")?, ast::Ty::Scalar(cir::Scalar::Int));
-    assert_eq!(cirparser::ty("((int))")?, ast::Ty::Scalar(cir::Scalar::Int));
-    assert_eq!(cirparser::ty("bool")?, ast::Ty::Scalar(cir::Scalar::Bool));
+    assert_eq!(cirparser::ty("int")?, ast::Type::Scalar(cir::Scalar::Int));
+    assert_eq!(cirparser::ty("((int))")?, ast::Type::Scalar(cir::Scalar::Int));
+    assert_eq!(cirparser::ty("bool")?, ast::Type::Scalar(cir::Scalar::Bool));
     assert_eq!(
         cirparser::ty("a")?,
-        ast::Ty::Var(TyVar { name: Name { symbol: "a".into(), span: Span::new(0, 1) } })
+        ast::Type::Var(TyVar { name: Name { symbol: "a".into(), span: Span::new(0, 1) } })
     );
     expect_file!["tests/expect/ty/arrow-simple.ast"].assert_debug_eq(&cirparser::ty(" a -> b ")?);
     expect_file!["tests/expect/ty/arrow-right-assoc.ast"]
@@ -114,7 +114,7 @@ fn test_parse_ty() -> anyhow::Result<()> {
 fn test_parse_value_def() -> anyhow::Result<()> {
     let value_def = ValueDef {
         name: Name { span: Span::new(5, 6), symbol: "x".into() },
-        ty: Ty::Var(TyVar { name: Name { span: Span::new(8, 9), symbol: "a".into() } }),
+        ty: Type::Var(TyVar { name: Name { span: Span::new(8, 9), symbol: "a".into() } }),
         expr: Expr::Var(Var::Val { name: Name { span: Span::new(12, 13), symbol: "k".into() } }),
     };
     assert_eq!(cirparser::value_def(" let x: a = k ")?, value_def);
@@ -125,7 +125,7 @@ fn test_parse_value_def() -> anyhow::Result<()> {
 fn test_parse_ty_arrow() -> anyhow::Result<()> {
     assert_eq!(
         cirparser::ty("a")?,
-        Ty::Var(TyVar { name: Name { span: Span::new(0, 1), symbol: "a".into() } })
+        Type::Var(TyVar { name: Name { span: Span::new(0, 1), symbol: "a".into() } })
     );
     Ok(())
 }
