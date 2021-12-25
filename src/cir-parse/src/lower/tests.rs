@@ -2,7 +2,7 @@ use super::*;
 
 #[test]
 fn test_lower_program() -> anyhow::Result<()> {
-    let source = crate::cirparser::source_file("let x: int = 1\nlet y: bool = false")?;
+    let source = crate::cirparser::source_file("let x: Int = 1\nlet y: Bool = false")?;
     let mut lcx = LowerCtxt::default();
     let file = lcx.lower_source_file(&source);
     assert_eq!(file.items.len(), 2);
@@ -19,7 +19,7 @@ fn test_lower_value_def() -> anyhow::Result<()> {
         }};
     }
 
-    lower!("let x: int = 1");
+    lower!("let x: Int = 1");
     // lower!("let f :: (a -> b) -> a -> b = \\f -> \\x -> f x");
     Ok(())
 }

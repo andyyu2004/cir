@@ -93,9 +93,9 @@ fn test_parse_lambda() -> anyhow::Result<()> {
 
 #[test]
 fn test_parse_ty() -> anyhow::Result<()> {
-    assert_eq!(cirparser::ty("int")?, ast::Type::Scalar(cir::Scalar::Int));
-    assert_eq!(cirparser::ty("((int))")?, ast::Type::Scalar(cir::Scalar::Int));
-    assert_eq!(cirparser::ty("bool")?, ast::Type::Scalar(cir::Scalar::Bool));
+    assert_eq!(cirparser::ty("Int")?, ast::Type::Scalar(cir::Scalar::Int));
+    assert_eq!(cirparser::ty("((Int))")?, ast::Type::Scalar(cir::Scalar::Int));
+    assert_eq!(cirparser::ty("Bool")?, ast::Type::Scalar(cir::Scalar::Bool));
     assert_eq!(
         cirparser::ty("a")?,
         ast::Type::Var(TyVar { name: Name { symbol: "a".into(), span: Span::new(0, 1) } })
