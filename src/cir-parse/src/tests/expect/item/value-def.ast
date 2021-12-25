@@ -1,7 +1,7 @@
 Item {
     span: Span {
         start: ByteIndex(1),
-        end: ByteIndex(16),
+        end: ByteIndex(14),
     },
     kind: ValueDef(
         ValueDef {
@@ -16,19 +16,19 @@ Item {
                 TyVar {
                     name: Name {
                         span: Span {
-                            start: ByteIndex(10),
-                            end: ByteIndex(11),
+                            start: ByteIndex(8),
+                            end: ByteIndex(9),
                         },
                         symbol: "a",
                     },
                 },
             ),
             expr: Var(
-                Id {
+                Val {
                     name: Name {
                         span: Span {
-                            start: ByteIndex(14),
-                            end: ByteIndex(15),
+                            start: ByteIndex(12),
+                            end: ByteIndex(13),
                         },
                         symbol: "k",
                     },

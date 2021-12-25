@@ -1,19 +1,30 @@
 Lambda(
-    Id {
-        name: Name {
+    Val(
+        Name {
             span: Span {
                 start: ByteIndex(1),
                 end: ByteIndex(2),
             },
             symbol: "x",
         },
-    },
+        Var(
+            TyVar {
+                name: Name {
+                    span: Span {
+                        start: ByteIndex(4),
+                        end: ByteIndex(5),
+                    },
+                    symbol: "a",
+                },
+            },
+        ),
+    ),
     Var(
-        Id {
+        Val {
             name: Name {
                 span: Span {
-                    start: ByteIndex(6),
-                    end: ByteIndex(7),
+                    start: ByteIndex(7),
+                    end: ByteIndex(8),
                 },
                 symbol: "x",
             },

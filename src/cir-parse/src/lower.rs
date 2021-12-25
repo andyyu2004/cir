@@ -64,7 +64,7 @@ impl LowerCtxt {
         self.exprs.alloc(expr)
     }
 
-    fn in_binder<R>(&mut self, binder: &ast::Var, f: impl FnOnce(&mut Self) -> R) -> R {
+    fn in_binder<R>(&mut self, binder: &ast::Binder, f: impl FnOnce(&mut Self) -> R) -> R {
         f(self)
     }
 

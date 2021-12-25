@@ -49,7 +49,7 @@ peg::parser! {
         }
 
 
-        pub rule tyvar() -> TyVar = "@" name:lname() {
+        pub rule tyvar() -> TyVar = name:lname() {
             TyVar {
                 name,
             }
@@ -57,14 +57,19 @@ peg::parser! {
 
         pub rule var() -> Var = precedence! {
             tyvar:tyvar() { Var::Ty(tyvar) }
-            name:lname() { Var::Id { name } }
+            name:lname() { Var::Val { name } }
+        }
+
+        pub rule binder() -> Binder = precedence! {
+            name:lname() _ ":" _ ty:ty() { Binder::Val(name, ty) }
+            "@" tyvar:tyvar() { Binder::Ty(tyvar) }
         }
 
         rule expr_atom() -> Expr = precedence! {
             "(" expr:expr() ")" { expr }
-            "\\" var:var() _ "->" _ expr:expr() { Expr::Lambda(var, Box::new(expr)) }
+            "\\" _ binder:binder() _ "." _ expr:expr() { Expr::Lambda(binder, Box::new(expr)) }
             lit:literal() { Expr::Lit(lit) }
-            name:lname() { Expr::Var(Var::Id { name }) }
+            name:lname() { Expr::Var(Var::Val { name }) }
         }
 
         pub rule expr() -> Expr = precedence! {
@@ -78,16 +83,16 @@ peg::parser! {
             "int" { Ty::Scalar(cir::Scalar::Int) }
             "forall" _ var:lname() "." ty:ty() { Ty::ForAll(var, Box::new(ty)) }
             "(" ty:ty() ")" { ty }
-            tyvar:lname() { Ty::Var(TyVar { name: tyvar }) }
+            name:lname() { Ty::Var(TyVar { name }) }
         }
 
-        pub rule ty() -> Ty= precedence! {
+        pub rule ty() -> Ty = precedence! {
              l:@ _ "->" _ r:(@)   { Ty::Fn(Box::new(l), Box::new(r)) }
              --
             _ atom:ty_atom() _ { atom }
         }
 
-        pub rule value_def() -> ValueDef = _ "let" _ name:lname() _ "::"  _ ty:ty() _ "=" _ expr:expr() _ {
+        pub rule value_def() -> ValueDef = _ "let" _ name:lname() _ ":"  _ ty:ty() _ "=" _ expr:expr() _ {
             ValueDef { name, expr, ty }
         }
 

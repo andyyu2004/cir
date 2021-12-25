@@ -1,20 +1,31 @@
 App(
     Lambda(
-        Id {
-            name: Name {
+        Val(
+            Name {
                 span: Span {
                     start: ByteIndex(2),
                     end: ByteIndex(3),
                 },
                 symbol: "x",
             },
-        },
+            Var(
+                TyVar {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(5),
+                            end: ByteIndex(6),
+                        },
+                        symbol: "a",
+                    },
+                },
+            ),
+        ),
         Var(
-            Id {
+            Val {
                 name: Name {
                     span: Span {
-                        start: ByteIndex(7),
-                        end: ByteIndex(8),
+                        start: ByteIndex(8),
+                        end: ByteIndex(9),
                     },
                     symbol: "x",
                 },
@@ -22,21 +33,32 @@ App(
         ),
     ),
     Lambda(
-        Id {
-            name: Name {
+        Val(
+            Name {
                 span: Span {
-                    start: ByteIndex(12),
-                    end: ByteIndex(13),
+                    start: ByteIndex(13),
+                    end: ByteIndex(14),
                 },
                 symbol: "y",
             },
-        },
+            Var(
+                TyVar {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(16),
+                            end: ByteIndex(17),
+                        },
+                        symbol: "b",
+                    },
+                },
+            ),
+        ),
         Var(
-            Id {
+            Val {
                 name: Name {
                     span: Span {
-                        start: ByteIndex(17),
-                        end: ByteIndex(18),
+                        start: ByteIndex(20),
+                        end: ByteIndex(21),
                     },
                     symbol: "y",
                 },

@@ -16,8 +16,14 @@ pub struct Spanned<T> {
 pub enum Expr {
     Var(Var),
     Lit(Literal),
-    Lambda(Var, Box<Expr>),
+    Lambda(Binder, Box<Expr>),
     App(Box<Expr>, Box<Expr>),
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum Binder {
+    Val(Name, Ty),
+    Ty(TyVar),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -35,7 +41,7 @@ pub enum LiteralKind {
 #[derive(Debug, PartialEq, Eq)]
 pub enum Var {
     /// Value level variable
-    Id { name: Name },
+    Val { name: Name },
     /// Type level variable
     Ty(TyVar),
 }

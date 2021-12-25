@@ -3,7 +3,7 @@ SourceFile {
         Item {
             span: Span {
                 start: ByteIndex(1),
-                end: ByteIndex(17),
+                end: ByteIndex(15),
             },
             kind: ValueDef(
                 ValueDef {
@@ -18,19 +18,19 @@ SourceFile {
                         TyVar {
                             name: Name {
                                 span: Span {
-                                    start: ByteIndex(10),
-                                    end: ByteIndex(11),
+                                    start: ByteIndex(8),
+                                    end: ByteIndex(9),
                                 },
                                 symbol: "a",
                             },
                         },
                     ),
                     expr: Var(
-                        Id {
+                        Val {
                             name: Name {
                                 span: Span {
-                                    start: ByteIndex(14),
-                                    end: ByteIndex(15),
+                                    start: ByteIndex(12),
+                                    end: ByteIndex(13),
                                 },
                                 symbol: "k",
                             },
@@ -41,15 +41,15 @@ SourceFile {
         },
         Item {
             span: Span {
-                start: ByteIndex(17),
-                end: ByteIndex(31),
+                start: ByteIndex(15),
+                end: ByteIndex(27),
             },
             kind: ValueDef(
                 ValueDef {
                     name: Name {
                         span: Span {
-                            start: ByteIndex(21),
-                            end: ByteIndex(22),
+                            start: ByteIndex(19),
+                            end: ByteIndex(20),
                         },
                         symbol: "y",
                     },
@@ -57,19 +57,19 @@ SourceFile {
                         TyVar {
                             name: Name {
                                 span: Span {
-                                    start: ByteIndex(26),
-                                    end: ByteIndex(27),
+                                    start: ByteIndex(22),
+                                    end: ByteIndex(23),
                                 },
                                 symbol: "b",
                             },
                         },
                     ),
                     expr: Var(
-                        Id {
+                        Val {
                             name: Name {
                                 span: Span {
-                                    start: ByteIndex(30),
-                                    end: ByteIndex(31),
+                                    start: ByteIndex(26),
+                                    end: ByteIndex(27),
                                 },
                                 symbol: "g",
                             },

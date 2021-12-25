@@ -41,7 +41,7 @@ fn test_parse_lit() -> anyhow::Result<()> {
 fn test_parse_expr_lit() -> anyhow::Result<()> {
     assert_eq!(
         cirparser::expr("x")?,
-        Expr::Var(Var::Id { name: Name { span: Span::new(0, 1), symbol: "x".into() } })
+        Expr::Var(Var::Val { name: Name { span: Span::new(0, 1), symbol: "x".into() } })
     );
     Ok(())
 }
@@ -49,7 +49,7 @@ fn test_parse_expr_lit() -> anyhow::Result<()> {
 #[test]
 fn test_parse_expr_group() -> anyhow::Result<()> {
     expect_file!["tests/expect/expr/group.ast"]
-        .assert_debug_eq(&cirparser::expr("(\\x -> x) (\\y -> y)")?);
+        .assert_debug_eq(&cirparser::expr("(\\x: a. x) (\\y: b.  y)")?);
     Ok(())
 }
 
@@ -59,16 +59,33 @@ fn test_parse_expr_app() -> anyhow::Result<()> {
     expect_file!["tests/expect/expr/app-left-assoc.ast"]
         .assert_debug_eq(&cirparser::expr("f x y")?);
     expect_file!["tests/expect/expr/lambda-app.ast"]
-        .assert_debug_eq(&cirparser::expr("(\\x -> x) y")?);
-    assert_ne!(cirparser::expr("(\\x -> x) y")?, cirparser::expr("\\x -> x y")?);
+        .assert_debug_eq(&cirparser::expr("(\\x: a. x) y")?);
+    assert_ne!(cirparser::expr("(\\x: b. x) y")?, cirparser::expr("\\x: b. x y")?);
+    Ok(())
+}
+
+#[test]
+fn test_parse_binder() -> anyhow::Result<()> {
+    assert_eq!(
+        cirparser::binder("x: a")?,
+        Binder::Val(
+            Name::new(Span::new(0, 1), "x"),
+            Ty::Var(TyVar { name: Name::new(Span::new(3, 4), "a") })
+        )
+    );
+
+    assert_eq!(
+        cirparser::binder("@t")?,
+        Binder::Ty(TyVar { name: Name::new(Span::new(1, 2), "t") })
+    );
     Ok(())
 }
 
 #[test]
 fn test_parse_lambda() -> anyhow::Result<()> {
-    expect_file!["tests/expect/expr/lambda.ast"].assert_debug_eq(&cirparser::expr("\\x -> x")?);
+    expect_file!["tests/expect/expr/lambda.ast"].assert_debug_eq(&cirparser::expr("\\x: a. x")?);
     expect_file!["tests/expect/expr/nested-lambda.ast"]
-        .assert_debug_eq(&cirparser::expr("\\x -> \\y -> x")?);
+        .assert_debug_eq(&cirparser::expr("\\x: a. \\y: b. x")?);
     Ok(())
 }
 
@@ -77,6 +94,10 @@ fn test_parse_ty() -> anyhow::Result<()> {
     assert_eq!(cirparser::ty("int")?, ast::Ty::Scalar(cir::Scalar::Int));
     assert_eq!(cirparser::ty("((int))")?, ast::Ty::Scalar(cir::Scalar::Int));
     assert_eq!(cirparser::ty("bool")?, ast::Ty::Scalar(cir::Scalar::Bool));
+    assert_eq!(
+        cirparser::ty("a")?,
+        ast::Ty::Var(TyVar { name: Name { symbol: "a".into(), span: Span::new(0, 1) } })
+    );
     expect_file!["tests/expect/ty/arrow-simple.ast"].assert_debug_eq(&cirparser::ty(" a -> b ")?);
     expect_file!["tests/expect/ty/arrow-right-assoc.ast"]
         .assert_debug_eq(&cirparser::ty(" a -> b -> c ")?);
@@ -91,10 +112,10 @@ fn test_parse_ty() -> anyhow::Result<()> {
 fn test_parse_value_def() -> anyhow::Result<()> {
     let value_def = ValueDef {
         name: Name { span: Span::new(5, 6), symbol: "x".into() },
-        ty: Ty::Var(TyVar { name: Name { span: Span::new(10, 11), symbol: "a".into() } }),
-        expr: Expr::Var(Var::Id { name: Name { span: Span::new(14, 15), symbol: "k".into() } }),
+        ty: Ty::Var(TyVar { name: Name { span: Span::new(8, 9), symbol: "a".into() } }),
+        expr: Expr::Var(Var::Val { name: Name { span: Span::new(12, 13), symbol: "k".into() } }),
     };
-    assert_eq!(cirparser::value_def(" let x :: a = k ")?, value_def);
+    assert_eq!(cirparser::value_def(" let x: a = k ")?, value_def);
     Ok(())
 }
 
@@ -109,14 +130,14 @@ fn test_parse_ty_arrow() -> anyhow::Result<()> {
 
 #[test]
 fn test_parse_item() -> anyhow::Result<()> {
-    expect_file!["tests/expect/item/value_def.ast"]
-        .assert_debug_eq(&cirparser::item(" let x :: a = k ")?);
+    expect_file!["tests/expect/item/value-def.ast"]
+        .assert_debug_eq(&cirparser::item(" let x: a = k ")?);
     Ok(())
 }
 
 #[test]
 fn test_parse_source_file() -> anyhow::Result<()> {
-    expect_file!["tests/expect/file/value_defs.ast"]
-        .assert_debug_eq(&cirparser::source_file(" let x :: a = k\n let y :: b = g")?);
+    expect_file!["tests/expect/file/value-defs.ast"]
+        .assert_debug_eq(&cirparser::source_file(" let x: a = k\n let y: b = g")?);
     Ok(())
 }

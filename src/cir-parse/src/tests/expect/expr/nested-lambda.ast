@@ -1,29 +1,51 @@
 Lambda(
-    Id {
-        name: Name {
+    Val(
+        Name {
             span: Span {
                 start: ByteIndex(1),
                 end: ByteIndex(2),
             },
             symbol: "x",
         },
-    },
+        Var(
+            TyVar {
+                name: Name {
+                    span: Span {
+                        start: ByteIndex(4),
+                        end: ByteIndex(5),
+                    },
+                    symbol: "a",
+                },
+            },
+        ),
+    ),
     Lambda(
-        Id {
-            name: Name {
+        Val(
+            Name {
                 span: Span {
-                    start: ByteIndex(7),
-                    end: ByteIndex(8),
+                    start: ByteIndex(8),
+                    end: ByteIndex(9),
                 },
                 symbol: "y",
             },
-        },
+            Var(
+                TyVar {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(11),
+                            end: ByteIndex(12),
+                        },
+                        symbol: "b",
+                    },
+                },
+            ),
+        ),
         Var(
-            Id {
+            Val {
                 name: Name {
                     span: Span {
-                        start: ByteIndex(12),
-                        end: ByteIndex(13),
+                        start: ByteIndex(14),
+                        end: ByteIndex(15),
                     },
                     symbol: "x",
                 },
