@@ -3,8 +3,8 @@ Fn(
         TyVar {
             name: Name {
                 span: Span {
-                    start: ByteIndex(1),
-                    end: ByteIndex(2),
+                    start: ByteIndex(0),
+                    end: ByteIndex(1),
                 },
                 symbol: "a",
             },
@@ -15,8 +15,8 @@ Fn(
             TyVar {
                 name: Name {
                     span: Span {
-                        start: ByteIndex(6),
-                        end: ByteIndex(7),
+                        start: ByteIndex(5),
+                        end: ByteIndex(6),
                     },
                     symbol: "b",
                 },
@@ -26,8 +26,8 @@ Fn(
             TyVar {
                 name: Name {
                     span: Span {
-                        start: ByteIndex(11),
-                        end: ByteIndex(12),
+                        start: ByteIndex(10),
+                        end: ByteIndex(11),
                     },
                     symbol: "c",
                 },

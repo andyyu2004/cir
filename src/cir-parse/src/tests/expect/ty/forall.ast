@@ -1,8 +1,8 @@
 ForAll(
     Name {
         span: Span {
-            start: ByteIndex(8),
-            end: ByteIndex(9),
+            start: ByteIndex(7),
+            end: ByteIndex(8),
         },
         symbol: "a",
     },
@@ -11,8 +11,8 @@ ForAll(
             TyVar {
                 name: Name {
                     span: Span {
-                        start: ByteIndex(10),
-                        end: ByteIndex(11),
+                        start: ByteIndex(9),
+                        end: ByteIndex(10),
                     },
                     symbol: "a",
                 },
@@ -22,8 +22,8 @@ ForAll(
             TyVar {
                 name: Name {
                     span: Span {
-                        start: ByteIndex(15),
-                        end: ByteIndex(16),
+                        start: ByteIndex(14),
+                        end: ByteIndex(15),
                     },
                     symbol: "a",
                 },

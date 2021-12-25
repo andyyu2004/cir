@@ -61,10 +61,11 @@ fn test_parse_expr_app() -> anyhow::Result<()> {
     expect_file!["tests/expect/expr/lambda-app.ast"]
         .assert_debug_eq(&cirparser::expr("(\\x: a. x) y")?);
     assert_ne!(cirparser::expr("(\\x: b. x) y")?, cirparser::expr("\\x: b. x y")?);
-    // expect_file!["tests/expect/expr/type-lambda-app.ast"]
-    //     .assert_debug_eq(&cirparser::expr("(\\@a. \\x: a. x) @Int y")?);
+
     expect_file!["tests/expect/expr/type-lambda-app.ast"]
         .assert_debug_eq(&cirparser::expr("(\\@a. 0) @Int")?);
+    expect_file!["tests/expect/expr/type-lambda-app-nested.ast"]
+        .assert_debug_eq(&cirparser::expr("(\\@a. \\x: a. x) @Int 5")?);
     Ok(())
 }
 
@@ -104,13 +105,12 @@ fn test_parse_ty() -> anyhow::Result<()> {
         cirparser::ty("a")?,
         ast::Type::Var(TyVar { name: Name { symbol: "a".into(), span: Span::new(0, 1) } })
     );
-    expect_file!["tests/expect/ty/arrow-simple.ast"].assert_debug_eq(&cirparser::ty(" a -> b ")?);
+    expect_file!["tests/expect/ty/arrow-simple.ast"].assert_debug_eq(&cirparser::ty("a -> b")?);
     expect_file!["tests/expect/ty/arrow-right-assoc.ast"]
-        .assert_debug_eq(&cirparser::ty(" a -> b -> c ")?);
-    expect_file!["tests/expect/ty/forall.ast"]
-        .assert_debug_eq(&cirparser::ty(" forall a.a -> a ")?);
+        .assert_debug_eq(&cirparser::ty("a -> b -> c")?);
+    expect_file!["tests/expect/ty/forall.ast"].assert_debug_eq(&cirparser::ty("forall a.a -> a")?);
     expect_file!["tests/expect/ty/nested-forall.ast"]
-        .assert_debug_eq(&cirparser::ty(" forall a. forall b. a -> b")?);
+        .assert_debug_eq(&cirparser::ty("forall a. forall b. a -> b")?);
     Ok(())
 }
 

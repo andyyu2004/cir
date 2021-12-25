@@ -1,0 +1,66 @@
+App(
+    App(
+        Lambda(
+            Ty(
+                TyVar {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(3),
+                            end: ByteIndex(4),
+                        },
+                        symbol: "a",
+                    },
+                },
+            ),
+            Lambda(
+                Val(
+                    Name {
+                        span: Span {
+                            start: ByteIndex(7),
+                            end: ByteIndex(8),
+                        },
+                        symbol: "x",
+                    },
+                    Var(
+                        TyVar {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(10),
+                                    end: ByteIndex(11),
+                                },
+                                symbol: "a",
+                            },
+                        },
+                    ),
+                ),
+                Var(
+                    Val {
+                        name: Name {
+                            span: Span {
+                                start: ByteIndex(13),
+                                end: ByteIndex(14),
+                            },
+                            symbol: "x",
+                        },
+                    },
+                ),
+            ),
+        ),
+        Type(
+            Scalar(
+                Int,
+            ),
+        ),
+    ),
+    Lit(
+        Literal {
+            span: Span {
+                start: ByteIndex(21),
+                end: ByteIndex(22),
+            },
+            kind: Int(
+                5,
+            ),
+        },
+    ),
+)

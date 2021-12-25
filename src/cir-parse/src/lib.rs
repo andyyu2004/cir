@@ -82,15 +82,15 @@ peg::parser! {
         rule ty_atom() -> Type = precedence! {
             "Bool"  { Type::Scalar(cir::Scalar::Bool) }
             "Int" { Type::Scalar(cir::Scalar::Int) }
-            "forall" _ var:lname() "." ty:ty() { Type::ForAll(var, Box::new(ty)) }
+            "forall" _ var:lname() _ "." _ ty:ty() { Type::ForAll(var, Box::new(ty)) }
             "(" ty:ty() ")" { ty }
             name:lname() { Type::Var(TyVar { name }) }
         }
 
         pub rule ty() -> Type = precedence! {
-             l:@ _ "->" _ r:(@)   { Type::Fn(Box::new(l), Box::new(r)) }
+             l:@ _ "->" _ r:(@) { Type::Fn(Box::new(l), Box::new(r)) }
              --
-            _ atom:ty_atom() _ { atom }
+            atom:ty_atom() { atom }
         }
 
         pub rule value_def() -> ValueDef = _ "let" _ name:lname() _ ":"  _ ty:ty() _ "=" _ expr:expr() _ {
