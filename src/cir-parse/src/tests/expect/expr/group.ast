@@ -1,11 +1,13 @@
 App(
     Lambda(
-        Name {
-            span: Span {
-                start: ByteIndex(2),
-                end: ByteIndex(3),
+        Id {
+            name: Name {
+                span: Span {
+                    start: ByteIndex(2),
+                    end: ByteIndex(3),
+                },
+                symbol: "x",
             },
-            symbol: "x",
         },
         Var(
             Id {
@@ -20,12 +22,14 @@ App(
         ),
     ),
     Lambda(
-        Name {
-            span: Span {
-                start: ByteIndex(12),
-                end: ByteIndex(13),
+        Id {
+            name: Name {
+                span: Span {
+                    start: ByteIndex(12),
+                    end: ByteIndex(13),
+                },
+                symbol: "y",
             },
-            symbol: "y",
         },
         Var(
             Id {

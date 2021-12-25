@@ -16,7 +16,7 @@ pub struct Spanned<T> {
 pub enum Expr {
     Var(Var),
     Lit(Literal),
-    Lambda(Name, Box<Expr>),
+    Lambda(Var, Box<Expr>),
     App(Box<Expr>, Box<Expr>),
 }
 

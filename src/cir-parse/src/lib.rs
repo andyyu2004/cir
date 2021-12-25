@@ -48,9 +48,21 @@ peg::parser! {
             Name::new(s.span, s.node)
         }
 
+
+        pub rule tyvar() -> TyVar = "@" name:lname() {
+            TyVar {
+                name,
+            }
+        }
+
+        pub rule var() -> Var = precedence! {
+            tyvar:tyvar() { Var::Ty(tyvar) }
+            name:lname() { Var::Id { name } }
+        }
+
         rule expr_atom() -> Expr = precedence! {
             "(" expr:expr() ")" { expr }
-            "\\" var:lname() _ "->" _ expr:expr() { Expr::Lambda(var, Box::new(expr)) }
+            "\\" var:var() _ "->" _ expr:expr() { Expr::Lambda(var, Box::new(expr)) }
             lit:literal() { Expr::Lit(lit) }
             name:lname() { Expr::Var(Var::Id { name }) }
         }

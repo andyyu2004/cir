@@ -1,10 +1,12 @@
 Lambda(
-    Name {
-        span: Span {
-            start: ByteIndex(1),
-            end: ByteIndex(2),
+    Id {
+        name: Name {
+            span: Span {
+                start: ByteIndex(1),
+                end: ByteIndex(2),
+            },
+            symbol: "x",
         },
-        symbol: "x",
     },
     Var(
         Id {
