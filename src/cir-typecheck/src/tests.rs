@@ -21,3 +21,8 @@ fn test_typeck_simple_lambda() {
     assert_eq!(check_expr("\\x: Int. \\y: Bool.x"), ty!(Int -> Bool -> Int));
     assert_eq!(check_expr("\\x: Int. \\y: Bool.y"), ty!(Int -> Bool -> Bool));
 }
+
+#[test]
+fn test_typeck_simple_app() {
+    assert_eq!(check_expr("(\\x:Int.x) 5"), ty!(Int));
+}

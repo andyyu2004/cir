@@ -17,12 +17,11 @@ impl TypecheckCtxt {
 
     fn check_binder(&self, binder: Binder) -> Ty {
         match &self.body.binders[binder] {
-            cir::BinderData::Val(ty) => Interned::clone(ty),
+            cir::BinderData::Val(ty) => Ty::clone(ty),
         }
     }
 
     fn check_expr(&mut self, expr: Expr) -> Ty {
-        let body = &self.body;
         match self.body[expr] {
             cir::ExprData::Var(binder) => self.check_binder(binder),
             cir::ExprData::Lit(lit) => match lit {
@@ -35,7 +34,13 @@ impl TypecheckCtxt {
                 TyData::new(TyKind::Fn(binder_ty, body_ty)).intern()
             }
             cir::ExprData::App(f, x) => match self.check_expr(f).kind() {
-                TyKind::Fn(_, _) => todo!(),
+                TyKind::Fn(param_ty, ret_ty) => {
+                    let arg_ty = self.check_expr(x);
+                    if &arg_ty != param_ty {
+                        todo!("type mismatch between argument and parameter");
+                    }
+                    Ty::clone(ret_ty)
+                }
                 _ => todo!(),
             },
             cir::ExprData::Type(_) => todo!(),

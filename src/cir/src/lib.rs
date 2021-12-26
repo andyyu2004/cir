@@ -136,7 +136,7 @@ impl TyData {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum TyKind {
     Scalar(Scalar),
     Fn(Ty, Ty),
