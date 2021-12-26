@@ -1,5 +1,6 @@
 use std::hash::{BuildHasherDefault, Hash, Hasher};
 use std::lazy::SyncOnceCell;
+use std::ops::Deref;
 use std::sync::Arc;
 
 use dashmap::{DashSet, SharedValue};
@@ -8,11 +9,19 @@ use rustc_hash::FxHasher;
 use crate::TyData;
 
 #[derive(Clone, Debug)]
-pub struct Interned<T: Intern>(Arc<T>);
+pub struct Interned<T>(Arc<T>);
 
 impl<T: Intern> PartialEq for Interned<T> {
     fn eq(&self, other: &Self) -> bool {
         Arc::ptr_eq(&self.0, &other.0)
+    }
+}
+
+impl<T> Deref for Interned<T> {
+    type Target = Arc<T>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 

@@ -6,8 +6,24 @@ use cir::Name;
 
 use codespan::Span;
 
+use self::lower::{BodyLowerCtxt, LowerCtxt};
+
+// FIXME minor hack for testing purposes for now
+pub fn parse_body(s: &str) -> cir::BodyData {
+    let expr: ast::Expr = cirparser::expr(s).unwrap();
+    let mut lcx = LowerCtxt::default();
+    let body_id = BodyLowerCtxt::new(&mut lcx).lower(&expr);
+    lcx.bodies[body_id].clone()
+}
+
+pub fn parse_ty(s: &str) -> cir::Ty {
+    let ty: ast::Type = cirparser::ty(s).unwrap();
+    let mut lcx = LowerCtxt::default();
+    lcx.lower_ty(&ty)
+}
+
 peg::parser! {
-    grammar cirparser() for str {
+    pub grammar cirparser() for str {
         rule lower() -> &'input str = s:$(['_' | 'a'..='z'] alphanumeric()?) { s }
         rule upper() -> &'input str = s:$(['A'..='Z'] alphanumeric()?) { s }
         rule alphanumeric() -> &'input str = s:$(['_' | 'a'..='z' | 'A'..='Z' | '0'..='9']+) { s }
@@ -50,9 +66,7 @@ peg::parser! {
 
 
         pub rule tyvar() -> TyVar = name:lname() {
-            TyVar {
-                name,
-            }
+            TyVar { name }
         }
 
         pub rule var() -> Var = precedence! {

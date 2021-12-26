@@ -1,12 +1,16 @@
 #![feature(once_cell)]
 
+use std::hash::Hash;
+use std::ops::Index;
+
 use codespan::Span;
-use la_arena::Idx;
+use la_arena::{Arena, Idx};
 use smallvec::{smallvec, SmallVec};
 use smol_str::SmolStr;
 
 pub use self::intern::{Intern, Interned};
 
+mod db;
 mod intern;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -26,10 +30,22 @@ pub struct ValueDef {
     pub body: Body,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Eq)]
 pub struct Name {
     pub span: Span,
     pub symbol: SmolStr,
+}
+
+impl Hash for Name {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.symbol.hash(state);
+    }
+}
+
+impl PartialEq for Name {
+    fn eq(&self, other: &Self) -> bool {
+        self.symbol == other.symbol
+    }
 }
 
 impl Name {
@@ -40,24 +56,20 @@ impl Name {
 
 pub type Expr = Idx<ExprData>;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ExprData {
-    Var(Debruijn),
+    Var(Binder),
     Lit(Lit),
     Lambda(Expr),
     App(Expr, Expr),
     Type(Ty),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Debruijn {
-    depth: usize,
-}
+pub type Binder = Idx<BinderData>;
 
-impl Debruijn {
-    pub const fn new(depth: usize) -> Self {
-        Self { depth }
-    }
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum BinderData {
+    Val(Ty),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -84,9 +96,26 @@ pub struct PathSegment {
 
 pub type Body = Idx<BodyData>;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BodyData {
+    /// The top-level expression
     pub expr: Expr,
+    pub exprs: Arena<ExprData>,
+    pub binders: Arena<BinderData>,
+}
+
+impl BodyData {
+    pub fn new(expr: Expr, exprs: Arena<ExprData>, binders: Arena<BinderData>) -> Self {
+        Self { expr, exprs, binders }
+    }
+}
+
+impl Index<Expr> for BodyData {
+    type Output = ExprData;
+
+    fn index(&self, index: Expr) -> &Self::Output {
+        &self.exprs[index]
+    }
 }
 
 pub type Ty = Interned<TyData>;
@@ -100,6 +129,10 @@ pub struct TyData {
 impl TyData {
     pub fn new(kind: TyKind) -> Self {
         Self { kind }
+    }
+
+    pub fn kind(&self) -> &TyKind {
+        &self.kind
     }
 }
 

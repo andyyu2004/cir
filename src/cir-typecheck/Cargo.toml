@@ -1,0 +1,10 @@
+[package]
+name = "cir-typecheck"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.cir]
+path = "../cir"
+
+[dev-dependencies.cir-parse]
+path = "../cir-parse"
