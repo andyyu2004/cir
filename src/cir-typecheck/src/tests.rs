@@ -16,5 +16,6 @@ fn test_typeck_scalar() {
 
 #[test]
 fn test_typeck_simple_lambda() {
-    // assert_eq!(check_expr("\\x: Int.5"), ty!(x -> y));
+    assert_eq!(check_expr("\\x: Bool.0"), ty!(Bool -> Int));
+    assert_eq!(check_expr("\\x: Int.x"), ty!(Int -> Int));
 }

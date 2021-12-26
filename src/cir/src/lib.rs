@@ -60,7 +60,7 @@ pub type Expr = Idx<ExprData>;
 pub enum ExprData {
     Var(Binder),
     Lit(Lit),
-    Lambda(Expr),
+    Lambda(Binder, Expr),
     App(Expr, Expr),
     Type(Ty),
 }

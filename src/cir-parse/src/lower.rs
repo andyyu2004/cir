@@ -2,7 +2,6 @@ use std::collections::{HashMap, VecDeque};
 
 use crate::ast;
 
-use cir::{Binder, BodyData, Name, Ty};
 use la_arena::{Arena, Idx};
 
 #[derive(Debug, Default)]
@@ -62,7 +61,7 @@ pub(crate) struct BodyLowerCtxt<'lcx> {
     lcx: &'lcx mut LowerCtxt,
     exprs: Arena<cir::ExprData>,
     binders: Arena<cir::BinderData>,
-    binder_map: HashMap<Name, Vec<Binder>>,
+    binder_map: HashMap<cir::Name, Vec<cir::Binder>>,
 }
 
 impl<'lcx> BodyLowerCtxt<'lcx> {
@@ -78,7 +77,7 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
     pub(crate) fn lower(mut self, expr: &ast::Expr) -> cir::Body {
         let expr = self.lower_expr(expr);
         let Self { exprs, binders, .. } = self;
-        self.lcx.bodies.alloc(BodyData::new(expr, exprs, binders))
+        self.lcx.bodies.alloc(cir::BodyData::new(expr, exprs, binders))
     }
 
     fn lower_expr(&mut self, expr: &ast::Expr) -> cir::Expr {
@@ -89,7 +88,7 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
                 ast::LiteralKind::Bool(b) => cir::Lit::Bool(b),
             }),
             ast::Expr::Lambda(binder, expr) =>
-                self.in_binder(binder, |lcx| cir::ExprData::Lambda(lcx.lower_expr(expr))),
+                self.in_binder(binder, |lcx, binder| cir::ExprData::Lambda(binder,lcx.lower_expr(expr))),
             ast::Expr::App(f, x) => cir::ExprData::App(self.lower_expr(f), self.lower_expr(x)),
             ast::Expr::Type(ty) => cir::ExprData::Type(self.lcx.lower_ty(ty)),
         };
@@ -112,14 +111,18 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
         self.binder_map.get(name).and_then(|binders| binders.last().copied())
     }
 
-    fn in_binder<R>(&mut self, binder: &ast::Binder, f: impl FnOnce(&mut Self) -> R) -> R {
+    fn in_binder<R>(
+        &mut self,
+        binder: &ast::Binder,
+        f: impl FnOnce(&mut Self, cir::Binder) -> R,
+    ) -> R {
         let (name, binder_data) = match binder {
             ast::Binder::Val(name, ty) => (name, cir::BinderData::Val(self.lcx.lower_ty(ty))),
             ast::Binder::Ty(_) => todo!(),
         };
         let binder = self.binders.alloc(binder_data);
         self.binder_map.entry(name.clone()).or_default().push(binder);
-        let r = f(self);
+        let r = f(self, binder);
         assert_eq!(self.binder_map.get_mut(name).unwrap().pop(), Some(binder));
         r
     }
