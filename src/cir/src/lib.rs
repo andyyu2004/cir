@@ -70,6 +70,7 @@ pub type Binder = Idx<BinderData>;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum BinderData {
     Val(Ty),
+    Ty,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -141,10 +142,13 @@ pub enum TyKind {
     Scalar(Scalar),
     Fn(Ty, Ty),
     Var(TyVar),
+    ForAll(Ty),
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
-pub struct TyVar {}
+#[derive(Debug, Hash, Clone, PartialEq, Eq)]
+pub struct TyVar {
+    pub name: Name,
+}
 
 impl TyKind {
     pub fn intern(self) -> Ty {

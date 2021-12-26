@@ -1,7 +1,7 @@
 use cir::{BinderData, Expr, ExprData, Intern, TyData, TyKind};
 use la_arena::RawIdx;
 
-use crate::parse_body;
+use crate::{parse_body, parse_ty};
 
 use super::*;
 
@@ -40,6 +40,21 @@ fn test_lower_binders() -> anyhow::Result<()> {
     };
     let binder = &body.binders[binder];
     assert_eq!(binder, &BinderData::Val(TyData::new(TyKind::Scalar(cir::Scalar::Int)).intern()));
+    Ok(())
+}
+
+#[test]
+fn test_lower_universal_type() -> anyhow::Result<()> {
+    // TODO
+    // let _ty = parse_ty("forall a. a -> a");
+    // let body = parse_body("(\\@a.\\x:a.x) @Int 0");
+    Ok(())
+}
+
+#[test]
+fn test_lower_type_binders() -> anyhow::Result<()> {
+    let _body = parse_body("\\@a.\\x:a.x");
+    // let body = parse_body("(\\@a.\\x:a.x) @Int 0");
     Ok(())
 }
 

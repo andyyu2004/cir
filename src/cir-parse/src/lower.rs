@@ -1,4 +1,5 @@
-use std::collections::{HashMap, VecDeque};
+use enum_map::{Enum, EnumMap};
+use std::collections::HashMap;
 
 use crate::ast;
 
@@ -35,20 +36,13 @@ impl LowerCtxt {
 
     pub(crate) fn lower_ty(&mut self, ty: &ast::Type) -> cir::Ty {
         let kind = match &ty {
-            ast::Type::Var(_) => todo!(),
+            ast::Type::Var(var) => cir::TyKind::Var(var.clone()),
             ast::Type::Scalar(scalar) => cir::TyKind::Scalar(*scalar),
             ast::Type::Fn(l, r) => cir::TyKind::Fn(self.lower_ty(l), self.lower_ty(r)),
-            ast::Type::ForAll(_, _) => todo!(),
+            // TODO not sure how to deal with var
+            ast::Type::ForAll(_var, ty) => cir::TyKind::ForAll(self.lower_ty(ty)),
         };
         kind.intern()
-    }
-
-    fn lower_ty_var(&mut self, var: &ast::TyVar) -> cir::Ty {
-        todo!()
-    }
-
-    fn lower_ty_fn(&mut self, l: &ast::Type, r: &ast::Type) -> cir::Ty {
-        todo!()
     }
 
     fn lower_body(&mut self, expr: &ast::Expr) -> cir::Body {
@@ -61,7 +55,15 @@ pub(crate) struct BodyLowerCtxt<'lcx> {
     lcx: &'lcx mut LowerCtxt,
     exprs: Arena<cir::ExprData>,
     binders: Arena<cir::BinderData>,
-    binder_map: HashMap<cir::Name, Vec<cir::Binder>>,
+    binder_map: Namespaced<HashMap<cir::Name, Vec<cir::Binder>>>,
+}
+
+type Namespaced<T> = EnumMap<Ns, T>;
+
+#[derive(Debug, Hash, Enum, Clone, Copy, PartialEq, Eq)]
+enum Ns {
+    Val,
+    Ty,
 }
 
 impl<'lcx> BodyLowerCtxt<'lcx> {
@@ -87,8 +89,9 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
                 ast::LiteralKind::Int(i) => cir::Lit::Int(i),
                 ast::LiteralKind::Bool(b) => cir::Lit::Bool(b),
             }),
-            ast::Expr::Lambda(binder, expr) =>
-                self.in_binder(binder, |lcx, binder| cir::ExprData::Lambda(binder,lcx.lower_expr(expr))),
+            ast::Expr::Lambda(binder, expr) => self.in_binder(binder, |lcx, binder| {
+                cir::ExprData::Lambda(binder, lcx.lower_expr(expr))
+            }),
             ast::Expr::App(f, x) => cir::ExprData::App(self.lower_expr(f), self.lower_expr(x)),
             ast::Expr::Type(ty) => cir::ExprData::Type(self.lcx.lower_ty(ty)),
         };
@@ -104,11 +107,12 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
     }
 
     fn lookup_var(&self, name: &ast::Var) -> Option<cir::Binder> {
-        let name = match name {
-            ast::Var::Val { name } => name,
+        let (name, ns) = match name {
+            ast::Var::Val { name } => (name, Ns::Val),
             ast::Var::Ty(_) => todo!(),
         };
-        self.binder_map.get(name).and_then(|binders| binders.last().copied())
+
+        self.binder_map[ns].get(name).and_then(|binders| binders.last().copied())
     }
 
     fn in_binder<R>(
@@ -116,14 +120,15 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
         binder: &ast::Binder,
         f: impl FnOnce(&mut Self, cir::Binder) -> R,
     ) -> R {
-        let (name, binder_data) = match binder {
-            ast::Binder::Val(name, ty) => (name, cir::BinderData::Val(self.lcx.lower_ty(ty))),
-            ast::Binder::Ty(_) => todo!(),
+        let (name, ns, binder_data) = match binder {
+            ast::Binder::Val(name, ty) =>
+                (name, Ns::Val, cir::BinderData::Val(self.lcx.lower_ty(ty))),
+            ast::Binder::Ty(var) => (&var.name, Ns::Ty, cir::BinderData::Ty),
         };
         let binder = self.binders.alloc(binder_data);
-        self.binder_map.entry(name.clone()).or_default().push(binder);
+        self.binder_map[ns].entry(name.clone()).or_default().push(binder);
         let r = f(self, binder);
-        assert_eq!(self.binder_map.get_mut(name).unwrap().pop(), Some(binder));
+        assert_eq!(self.binder_map[ns].get_mut(name).unwrap().pop(), Some(binder));
         r
     }
 }

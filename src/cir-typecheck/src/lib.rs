@@ -1,7 +1,7 @@
-use cir::*;
+use cir::{Intern, Ty, TyData, TyKind};
 
 struct TypecheckCtxt {
-    body: BodyData,
+    body: cir::BodyData,
 }
 
 macro_rules! ty {
@@ -15,13 +15,18 @@ impl TypecheckCtxt {
         self.check_expr(self.body.expr)
     }
 
-    fn check_binder(&self, binder: Binder) -> Ty {
-        match &self.body.binders[binder] {
+    fn binder(&self, binder: cir::Binder) -> &cir::BinderData {
+        &self.body.binders[binder]
+    }
+
+    fn check_binder(&self, binder: cir::Binder) -> Ty {
+        match self.binder(binder) {
             cir::BinderData::Val(ty) => Ty::clone(ty),
+            cir::BinderData::Ty => panic!(),
         }
     }
 
-    fn check_expr(&mut self, expr: Expr) -> Ty {
+    fn check_expr(&mut self, expr: cir::Expr) -> Ty {
         match self.body[expr] {
             cir::ExprData::Var(binder) => self.check_binder(binder),
             cir::ExprData::Lit(lit) => match lit {
@@ -29,9 +34,14 @@ impl TypecheckCtxt {
                 cir::Lit::Int(_) => ty!(Int),
             },
             cir::ExprData::Lambda(binder, body) => {
-                let binder_ty = self.check_binder(binder);
                 let body_ty = self.check_expr(body);
-                TyData::new(TyKind::Fn(binder_ty, body_ty)).intern()
+                match self.binder(binder) {
+                    cir::BinderData::Val(binder_ty) => {
+                        let binder_ty = Ty::clone(binder_ty);
+                        TyData::new(TyKind::Fn(binder_ty, body_ty)).intern()
+                    }
+                    cir::BinderData::Ty => TyKind::ForAll(body_ty).intern(),
+                }
             }
             cir::ExprData::App(f, x) => match self.check_expr(f).kind() {
                 TyKind::Fn(param_ty, ret_ty) => {
@@ -43,7 +53,7 @@ impl TypecheckCtxt {
                 }
                 _ => todo!(),
             },
-            cir::ExprData::Type(_) => todo!(),
+            cir::ExprData::Type(_) => unreachable!("found type in expression position"),
         }
     }
 }

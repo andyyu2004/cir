@@ -2,7 +2,7 @@ mod ast;
 mod lower;
 
 use ast::*;
-use cir::Name;
+use cir::{Name, TyVar};
 
 use codespan::Span;
 

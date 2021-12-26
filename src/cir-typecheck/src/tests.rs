@@ -32,6 +32,12 @@ fn test_typeck_higher_order_lambda() {
 }
 
 #[test]
+fn test_typeck_type_lambda() {
+    // what does it mean to have a type abstraction with no value abstraction? e.g. \@a.0
+    assert_eq!(check_expr("\\@a.\\x:a.x"), ty!(forall a. a -> a));
+}
+
+#[test]
 fn test_typeck_simple_app() {
     assert_eq!(check_expr("(\\x:Int.x) 5"), ty!(Int));
 }

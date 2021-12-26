@@ -1,4 +1,4 @@
-use cir::Name;
+use cir::{Name, TyVar};
 use codespan::Span;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -45,11 +45,6 @@ pub enum Var {
     Val { name: Name },
     /// Type level variable
     Ty(TyVar),
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct TyVar {
-    pub name: Name,
 }
 
 #[derive(Debug, PartialEq, Eq)]

@@ -33,6 +33,7 @@ dependencies = [
  "anyhow",
  "cir",
  "codespan",
+ "enum-map",
  "expect-test",
  "la-arena",
  "peg",
@@ -80,6 +81,26 @@ name = "dissimilar"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "31ad93652f40969dead8d4bf897a41e9462095152eb21c56e5830537e41179dd"
+
+[[package]]
+name = "enum-map"
+version = "1.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e893a7ba6116821058dec84a6fb14fb2a97cd8ce5fd0f85d5a4e760ecd7329d9"
+dependencies = [
+ "enum-map-derive",
+]
+
+[[package]]
+name = "enum-map-derive"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "84278eae0af6e34ff6c1db44c11634a694aafac559ff3080e4db4e4ac35907aa"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "expect-test"
@@ -190,6 +211,17 @@ name = "smol_str"
 version = "0.1.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "61d15c83e300cce35b7c8cd39ff567c1ef42dde6d4a1a38dbdbf9a59902261bd"
+
+[[package]]
+name = "syn"
+version = "1.0.84"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ecb2e6da8ee5eb9a61068762a32fa9619cc591ceb055b3687f4cd4051ec2e06b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-xid",
+]
 
 [[package]]
 name = "termcolor"

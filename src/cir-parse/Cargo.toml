@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1"
 codespan = "0.11"
+enum-map = "1"
 la-arena = "0.2"
 peg = "0.7"
 
