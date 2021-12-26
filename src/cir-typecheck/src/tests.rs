@@ -23,6 +23,20 @@ fn test_typeck_simple_lambda() {
 }
 
 #[test]
+fn test_typeck_higher_order_lambda() {
+    assert_eq!(check_expr("\\p:(Int -> Bool).\\x: Int.(p x)"), ty!((Int -> Bool) -> Int -> Bool));
+    assert_eq!(
+        check_expr("\\p:(Int -> Bool).\\x: Int.p"),
+        ty!((Int -> Bool) -> Int -> Int -> Bool)
+    );
+}
+
+#[test]
 fn test_typeck_simple_app() {
     assert_eq!(check_expr("(\\x:Int.x) 5"), ty!(Int));
+}
+
+#[test]
+fn test_typeck_higher_order_app() {
+    assert_eq!(check_expr("(\\p:Int -> Bool.\\x:Int.p x) (\\x:Int.false) 0"), ty!(Bool));
 }
