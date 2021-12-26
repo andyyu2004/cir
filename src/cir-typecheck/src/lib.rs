@@ -1,4 +1,5 @@
 use cir::{Intern, Ty, TyData, TyKind};
+use subst::Substitute;
 
 struct TypecheckCtxt {
     body: cir::BodyData,
@@ -51,6 +52,13 @@ impl TypecheckCtxt {
                     }
                     Ty::clone(ret_ty)
                 }
+                TyKind::ForAll(body_ty) => {
+                    let ty = match &self.body[x] {
+                        cir::ExprData::Type(ty) => Ty::clone(&ty),
+                        _ => todo!("expected type for type lambda"),
+                    };
+                    body_ty.substitute(&[ty])
+                }
                 _ => todo!(),
             },
             cir::ExprData::Type(_) => unreachable!("found type in expression position"),
@@ -58,5 +66,6 @@ impl TypecheckCtxt {
     }
 }
 
+mod subst;
 #[cfg(test)]
 mod tests;
