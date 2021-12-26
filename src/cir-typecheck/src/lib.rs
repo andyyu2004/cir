@@ -1,4 +1,4 @@
-use cir::{BodyData, Expr, Scalar, Ty, TyData, TyKind};
+use cir::{BodyData, Expr, Interned, Scalar, Ty, TyData, TyKind};
 
 struct TypecheckCtxt {
     body: BodyData,
@@ -18,7 +18,9 @@ impl TypecheckCtxt {
     fn check_expr(&mut self, expr: Expr) -> Ty {
         let body = &self.body;
         match self.body[expr] {
-            cir::ExprData::Var(_) => todo!(),
+            cir::ExprData::Var(binder) => match &self.body.binders[binder] {
+                cir::BinderData::Val(ty) => Interned::clone(ty),
+            },
             cir::ExprData::Lit(lit) => match lit {
                 cir::Lit::Bool(_) => ty!(Bool),
                 cir::Lit::Int(_) => ty!(Int),

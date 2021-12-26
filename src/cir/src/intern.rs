@@ -8,8 +8,27 @@ use rustc_hash::FxHasher;
 
 use crate::TyData;
 
-#[derive(Clone, Debug)]
+#[derive(Debug, Clone)]
 pub struct Interned<T>(Arc<T>);
+
+impl<T: Intern> Interned<T> {
+    pub fn intern(x: T) -> Self {
+        // FIXME This function causes an ICE quite often.
+        // Downgrading to dashmap 4 (from 5) seems to avoid it?
+        // Needs some more investigation
+        let map = T::interner().get();
+        let shard_idx = map.determine_map(&x);
+        let mut shard = map.shards()[shard_idx].write();
+        match shard.get_key_value(&x) {
+            Some((interned, _)) => Self(Arc::clone(&interned)),
+            None => {
+                let arc = Arc::new(x);
+                shard.insert(Arc::clone(&arc), SharedValue::new(()));
+                Self(arc)
+            }
+        }
+    }
+}
 
 impl<T: Intern> PartialEq for Interned<T> {
     fn eq(&self, other: &Self) -> bool {
@@ -31,22 +50,6 @@ impl<T: Intern> Eq for Interned<T> {
 impl<T: Intern> Hash for Interned<T> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         state.write_usize(Arc::as_ptr(&self.0) as *const () as usize)
-    }
-}
-
-impl<T: Intern> Interned<T> {
-    pub fn intern(x: T) -> Self {
-        let map = T::interner().get();
-        let shard_idx = map.determine_map(&x);
-        let mut shard = map.shards()[shard_idx].write();
-        match shard.get_key_value(&x) {
-            Some((interned, _)) => Self(Arc::clone(&interned)),
-            None => {
-                let arc = Arc::new(x);
-                shard.insert(Arc::clone(&arc), SharedValue::new(()));
-                Self(arc)
-            }
-        }
     }
 }
 

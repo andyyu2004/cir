@@ -10,7 +10,7 @@ rustc-hash = "1"
 smallvec = "1"
 
 [dependencies.dashmap]
-version = "5"
+version = "4"
 features = ["raw-api"]
 
 [dependencies.smol_str]
