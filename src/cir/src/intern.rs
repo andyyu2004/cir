@@ -1,3 +1,4 @@
+use std::fmt;
 use std::hash::{BuildHasherDefault, Hash, Hasher};
 use std::lazy::SyncOnceCell;
 use std::ops::Deref;
@@ -8,8 +9,14 @@ use rustc_hash::FxHasher;
 
 use crate::TyData;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Interned<T>(Arc<T>);
+
+impl<T: fmt::Debug> fmt::Debug for Interned<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self.0)
+    }
+}
 
 impl<T: Intern> Interned<T> {
     pub fn intern(x: T) -> Self {

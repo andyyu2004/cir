@@ -41,6 +41,8 @@ fn test_typeck_type_lambda() {
 fn test_typeck_type_application() {
     // what does it mean to have a type abstraction with no value abstraction? e.g. \@a.0
     assert_eq!(check_expr("(\\@a.\\x:a.x) @Int"), ty!(Int -> Int));
+    assert_eq!(check_expr("(\\@a.\\@b.\\x:a.\\y:b.x) @Int @Bool"), ty!(Int -> Bool -> Int));
+    // TODO test partial app of type lambdas
 }
 
 #[test]

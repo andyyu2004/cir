@@ -1,5 +1,6 @@
 #![feature(once_cell)]
 
+use std::fmt::{self, write};
 use std::hash::Hash;
 use std::ops::Index;
 
@@ -121,10 +122,16 @@ impl Index<Expr> for BodyData {
 
 pub type Ty = Interned<TyData>;
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub struct TyData {
     // TODO flags
     kind: TyKind,
+}
+
+impl fmt::Debug for TyData {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self.kind)
+    }
 }
 
 impl TyData {
@@ -137,12 +144,23 @@ impl TyData {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub enum TyKind {
     Scalar(Scalar),
     Fn(Ty, Ty),
     Var(TyVar),
     ForAll(Ty),
+}
+
+impl fmt::Debug for TyKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            TyKind::Scalar(scalar) => write!(f, "{:?}", scalar),
+            TyKind::Fn(l, r) => write!(f, "({:?} -> {:?})", l, r),
+            TyKind::Var(var) => write!(f, "{:?}", var),
+            TyKind::ForAll(ty) => write!(f, "∀.{:?}", ty),
+        }
+    }
 }
 
 #[derive(Debug, Hash, Clone, PartialEq, Eq)]
