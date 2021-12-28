@@ -33,6 +33,7 @@ fn test_typeck_higher_order_lambda() {
 
 #[test]
 fn test_typeck_type_lambda() {
+    assert_eq!(ty!(forall a. a -> a), ty!(forall b. b -> b));
     assert_eq!(check_expr("\\@a.\\x:a.x"), ty!(forall a. a -> a));
     assert_eq!(check_expr("\\@a.\\@b.\\x:a.\\y:b.y"), ty!(forall a. forall b. a -> b -> b));
     assert_eq!(check_expr("\\@a.42"), ty!(forall a. Int));

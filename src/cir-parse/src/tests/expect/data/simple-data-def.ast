@@ -24,6 +24,7 @@ SourceFile {
                                 },
                                 symbol: "A",
                             },
+                            params: [],
                         },
                     ],
                 },

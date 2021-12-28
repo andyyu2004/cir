@@ -89,4 +89,5 @@ pub struct DataDef {
 #[derive(Debug, PartialEq, Eq)]
 pub struct Variant {
     pub name: Name,
+    pub params: Vec<Type>,
 }

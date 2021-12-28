@@ -1,7 +1,7 @@
 #![feature(once_cell)]
 
-use std::fmt::{self, write, DebugList};
-use std::hash::Hash;
+use std::fmt;
+use std::hash::{Hash, Hasher};
 use std::ops::Index;
 
 use codespan::Span;
@@ -38,7 +38,7 @@ pub struct Name {
 }
 
 impl Hash for Name {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         self.symbol.hash(state);
     }
 }

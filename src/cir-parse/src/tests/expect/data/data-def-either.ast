@@ -1,0 +1,87 @@
+SourceFile {
+    items: [
+        Item {
+            span: Span {
+                start: ByteIndex(0),
+                end: ByteIndex(34),
+            },
+            kind: DataDef(
+                DataDef {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(5),
+                            end: ByteIndex(11),
+                        },
+                        symbol: "Either",
+                    },
+                    binders: [
+                        TyVar {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(12),
+                                    end: ByteIndex(13),
+                                },
+                                symbol: "a",
+                            },
+                        },
+                        TyVar {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(14),
+                                    end: ByteIndex(15),
+                                },
+                                symbol: "b",
+                            },
+                        },
+                    ],
+                    variants: [
+                        Variant {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(18),
+                                    end: ByteIndex(22),
+                                },
+                                symbol: "Left",
+                            },
+                            params: [
+                                Var(
+                                    TyVar {
+                                        name: Name {
+                                            span: Span {
+                                                start: ByteIndex(23),
+                                                end: ByteIndex(24),
+                                            },
+                                            symbol: "a",
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                        Variant {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(27),
+                                    end: ByteIndex(32),
+                                },
+                                symbol: "Right",
+                            },
+                            params: [
+                                Var(
+                                    TyVar {
+                                        name: Name {
+                                            span: Span {
+                                                start: ByteIndex(33),
+                                                end: ByteIndex(34),
+                                            },
+                                            symbol: "b",
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                    ],
+                },
+            ),
+        },
+    ],
+}

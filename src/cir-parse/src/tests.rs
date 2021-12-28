@@ -154,5 +154,7 @@ fn test_parse_data_def() -> anyhow::Result<()> {
         .assert_debug_eq(&cirparser::source_file("data T = A")?);
     expect_file!["tests/expect/data/simple-data-def-multi-variant.ast"]
         .assert_debug_eq(&cirparser::source_file("data T = A | B")?);
+    expect_file!["tests/expect/data/data-def-either.ast"]
+        .assert_debug_eq(&cirparser::source_file("data Either a b = Left a | Right b")?);
     Ok(())
 }
