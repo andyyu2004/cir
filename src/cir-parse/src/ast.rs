@@ -69,6 +69,7 @@ pub struct Item {
 #[derive(Debug, PartialEq, Eq)]
 pub enum ItemKind {
     ValueDef(ValueDef),
+    DataDef(DataDef),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -76,4 +77,16 @@ pub struct ValueDef {
     pub name: Name,
     pub ty: Type,
     pub expr: Expr,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct DataDef {
+    pub name: Name,
+    pub binders: Vec<TyVar>,
+    pub variants: Vec<Variant>,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct Variant {
+    pub name: Name,
 }

@@ -23,6 +23,7 @@ impl LowerCtxt {
     fn lower_item(&mut self, item: &ast::Item) -> cir::Item {
         match &item.kind {
             ast::ItemKind::ValueDef(def) => cir::Item::ValueDef(self.lower_value_def(def)),
+            ast::ItemKind::DataDef(_) => todo!(),
         }
     }
 

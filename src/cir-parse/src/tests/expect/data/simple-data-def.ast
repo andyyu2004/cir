@@ -1,0 +1,33 @@
+SourceFile {
+    items: [
+        Item {
+            span: Span {
+                start: ByteIndex(0),
+                end: ByteIndex(10),
+            },
+            kind: DataDef(
+                DataDef {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(5),
+                            end: ByteIndex(6),
+                        },
+                        symbol: "T",
+                    },
+                    binders: [],
+                    variants: [
+                        Variant {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(9),
+                                    end: ByteIndex(10),
+                                },
+                                symbol: "A",
+                            },
+                        },
+                    ],
+                },
+            ),
+        },
+    ],
+}

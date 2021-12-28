@@ -111,6 +111,19 @@ peg::parser! {
             ValueDef { name, expr, ty }
         }
 
+        // data Foo a b = Foo a | Bar b
+        pub rule data_def() -> DataDef = _ "data" _ name:uname() _ binders:(tyvar())* _ "=" _ variants:(variant() ++ "|") {
+            DataDef {
+                name,
+                binders,
+                variants,
+            }
+        }
+
+        pub rule variant() -> Variant = name:uname() {
+            Variant { name }
+        }
+
         pub rule value_def_item() -> Item = _ def:spanned(<value_def()>) _ {
             Item {
                 span: def.span,
@@ -118,9 +131,14 @@ peg::parser! {
             }
         }
 
-        pub rule item() -> Item = item:value_def_item() {
-            item
+        pub rule data_def_item() -> Item = _ def:spanned(<data_def()>) _ {
+            Item {
+                span: def.span,
+                kind: ItemKind::DataDef(def.node)
+            }
         }
+
+        pub rule item() -> Item = value_def_item() / data_def_item()
 
         pub rule source_file() -> SourceFile = _ items:(items:item())* {
             SourceFile { items }

@@ -147,3 +147,10 @@ fn test_parse_source_file() -> anyhow::Result<()> {
         .assert_debug_eq(&cirparser::source_file(" let x: a = k\n let y: b = g")?);
     Ok(())
 }
+
+#[test]
+fn test_parse_data_def() -> anyhow::Result<()> {
+    expect_file!["tests/expect/data/simple-data-def.ast"]
+        .assert_debug_eq(&cirparser::source_file("data T = A")?);
+    Ok(())
+}
