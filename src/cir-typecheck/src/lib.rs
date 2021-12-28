@@ -53,11 +53,13 @@ impl TypecheckCtxt {
                     Ty::clone(ret_ty)
                 }
                 TyKind::ForAll(body_ty) => {
-                    let ty = match &self.body[x] {
+                    let subst = match &self.body[x] {
                         cir::ExprData::Type(ty) => Ty::clone(&ty),
                         _ => todo!("expected type for type lambda"),
                     };
-                    body_ty.substitute(&[ty])
+                    dbg!(&body_ty);
+                    dbg!(&subst);
+                    body_ty.substitute(&subst)
                 }
                 _ => todo!(),
             },

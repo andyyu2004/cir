@@ -1,18 +1,22 @@
 ForAll(
-    Name {
-        span: Span {
-            start: ByteIndex(7),
-            end: ByteIndex(8),
+    TyVar {
+        name: Name {
+            span: Span {
+                start: ByteIndex(7),
+                end: ByteIndex(8),
+            },
+            symbol: "a",
         },
-        symbol: "a",
     },
     ForAll(
-        Name {
-            span: Span {
-                start: ByteIndex(17),
-                end: ByteIndex(18),
+        TyVar {
+            name: Name {
+                span: Span {
+                    start: ByteIndex(17),
+                    end: ByteIndex(18),
+                },
+                symbol: "b",
             },
-            symbol: "b",
         },
         Fn(
             Var(

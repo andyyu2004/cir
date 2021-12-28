@@ -1,3 +1,4 @@
+use cir::Debruijn;
 use enum_map::{Enum, EnumMap};
 use std::collections::HashMap;
 
@@ -10,6 +11,7 @@ pub(crate) struct LowerCtxt {
     pub(crate) bodies: Arena<cir::BodyData>,
     value_defs: Arena<cir::ValueDef>,
     exprs: Arena<cir::ExprData>,
+    foralls: Vec<cir::Name>,
 }
 
 impl LowerCtxt {
@@ -36,13 +38,26 @@ impl LowerCtxt {
 
     pub(crate) fn lower_ty(&mut self, ty: &ast::Type) -> cir::Ty {
         let kind = match &ty {
-            ast::Type::Var(var) => cir::TyKind::Var(var.clone()),
+            ast::Type::Var(var) => cir::TyKind::Var(self.lower_ty_var(var)),
             ast::Type::Scalar(scalar) => cir::TyKind::Scalar(*scalar),
             ast::Type::Fn(l, r) => cir::TyKind::Fn(self.lower_ty(l), self.lower_ty(r)),
             // TODO not sure how to deal with var
-            ast::Type::ForAll(_var, ty) => cir::TyKind::ForAll(self.lower_ty(ty)),
+            ast::Type::ForAll(var, ty) =>
+                self.in_forall(var, |lcx| cir::TyKind::ForAll(lcx.lower_ty(ty))),
         };
         kind.intern()
+    }
+
+    fn lower_ty_var(&mut self, var: &ast::TyVar) -> Debruijn {
+        let index = self.foralls.iter().rev().position(|name| name == &var.name).unwrap();
+        Debruijn::new(index as u32)
+    }
+
+    fn in_forall<R>(&mut self, var: &ast::TyVar, f: impl FnOnce(&mut Self) -> R) -> R {
+        self.foralls.push(var.name.clone());
+        let r = f(self);
+        assert_eq!(self.foralls.pop().unwrap(), var.name);
+        r
     }
 
     fn lower_body(&mut self, expr: &ast::Expr) -> cir::Body {
@@ -89,8 +104,8 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
                 ast::LiteralKind::Int(i) => cir::Lit::Int(i),
                 ast::LiteralKind::Bool(b) => cir::Lit::Bool(b),
             }),
-            ast::Expr::Lambda(binder, expr) => self.in_binder(binder, |lcx, binder| {
-                cir::ExprData::Lambda(binder, lcx.lower_expr(expr))
+            ast::Expr::Lambda(binder, expr) => self.in_binder(binder, |bcx, binder| {
+                cir::ExprData::Lambda(binder, bcx.lower_expr(expr))
             }),
             ast::Expr::App(f, x) => cir::ExprData::App(self.lower_expr(f), self.lower_expr(x)),
             ast::Expr::Type(ty) => cir::ExprData::Type(self.lcx.lower_ty(ty)),
@@ -120,16 +135,30 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
         binder: &ast::Binder,
         f: impl FnOnce(&mut Self, cir::Binder) -> R,
     ) -> R {
-        let (name, ns, binder_data) = match binder {
-            ast::Binder::Val(name, ty) =>
-                (name, Ns::Val, cir::BinderData::Val(self.lcx.lower_ty(ty))),
-            ast::Binder::Ty(var) => (&var.name, Ns::Ty, cir::BinderData::Ty),
-        };
-        let binder = self.binders.alloc(binder_data);
-        self.binder_map[ns].entry(name.clone()).or_default().push(binder);
-        let r = f(self, binder);
-        assert_eq!(self.binder_map[ns].get_mut(name).unwrap().pop(), Some(binder));
-        r
+        match binder {
+            ast::Binder::Val(name, ty) => {
+                // (name, Ns::Val, cir::BinderData::Val(self.lcx.lower_ty(ty)));
+                let ns = Ns::Val;
+                let binder_data = cir::BinderData::Val(self.lcx.lower_ty(ty));
+                let binder = self.binders.alloc(binder_data);
+                self.binder_map[ns].entry(name.clone()).or_default().push(binder);
+                let r = f(self, binder);
+                assert_eq!(self.binder_map[ns].get_mut(name).unwrap().pop(), Some(binder));
+                r
+            }
+            ast::Binder::Ty(var) => {
+                // (&var.name, Ns::Ty, cir::BinderData::Ty),
+                // FIXME hack (copying `in_forall` impl for now)
+                self.lcx.foralls.push(var.name.clone());
+
+                // FIXME do we need this binder
+                let binder_data = cir::BinderData::Ty;
+                let binder = self.binders.alloc(binder_data);
+                let r = f(self, binder);
+                assert_eq!(self.lcx.foralls.pop().unwrap(), var.name);
+                r
+            }
+        }
     }
 }
 

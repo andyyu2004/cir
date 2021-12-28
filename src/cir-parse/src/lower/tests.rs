@@ -1,7 +1,7 @@
 use cir::{BinderData, Expr, ExprData, Intern, TyData, TyKind};
 use la_arena::RawIdx;
 
-use crate::{parse_body, parse_ty};
+use crate::parse_body;
 
 use super::*;
 
@@ -26,6 +26,7 @@ fn test_lower_value_def() -> anyhow::Result<()> {
 
     lower!("let x: Int = 1");
     // lower!("let f :: (a -> b) -> a -> b = \\f -> \\x -> f x");
+    // lower!("let id: forall a. a -> a = \\t.\\x:t.x");
     Ok(())
 }
 
@@ -54,7 +55,7 @@ fn test_lower_universal_type() -> anyhow::Result<()> {
 #[test]
 fn test_lower_type_binders() -> anyhow::Result<()> {
     let _body = parse_body("\\@a.\\x:a.x");
-    // let body = parse_body("(\\@a.\\x:a.x) @Int 0");
+    dbg!(_body);
     Ok(())
 }
 

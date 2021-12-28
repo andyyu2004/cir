@@ -1,4 +1,4 @@
-use cir::{Name, TyVar};
+use cir::Name;
 use codespan::Span;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -27,6 +27,11 @@ pub enum Binder {
     Ty(TyVar),
 }
 
+#[derive(Debug, Hash, Clone, PartialEq, Eq)]
+pub struct TyVar {
+    pub name: Name,
+}
+
 #[derive(Debug, PartialEq, Eq)]
 pub struct Literal {
     pub span: Span,
@@ -52,7 +57,7 @@ pub enum Type {
     Var(TyVar),
     Scalar(cir::Scalar),
     Fn(Box<Type>, Box<Type>),
-    ForAll(Name, Box<Type>),
+    ForAll(TyVar, Box<Type>),
 }
 
 #[derive(Debug, PartialEq, Eq)]

@@ -3,6 +3,9 @@ name = "cir-typecheck"
 version = "0.1.0"
 edition = "2021"
 
+[dependencies]
+rustc-hash = "1"
+
 [dependencies.cir]
 path = "../cir"
 

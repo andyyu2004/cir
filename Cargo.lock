@@ -45,6 +45,7 @@ version = "0.1.0"
 dependencies = [
  "cir",
  "cir-parse",
+ "rustc-hash",
 ]
 
 [[package]]

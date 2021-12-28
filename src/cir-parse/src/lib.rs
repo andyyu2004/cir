@@ -2,7 +2,7 @@ mod ast;
 mod lower;
 
 use ast::*;
-use cir::{Name, TyVar};
+use cir::Name;
 
 use codespan::Span;
 
@@ -96,7 +96,7 @@ peg::parser! {
         rule ty_atom() -> Type = precedence! {
             "Bool"  { Type::Scalar(cir::Scalar::Bool) }
             "Int" { Type::Scalar(cir::Scalar::Int) }
-            "forall" _ var:lname() _ "." _ ty:ty() { Type::ForAll(var, Box::new(ty)) }
+            "forall" _ tyvar:tyvar() _ "." _ ty:ty() { Type::ForAll(tyvar, Box::new(ty)) }
             "(" ty:ty() ")" { ty }
             name:lname() { Type::Var(TyVar { name }) }
         }

@@ -1,6 +1,6 @@
 #![feature(once_cell)]
 
-use std::fmt::{self, write};
+use std::fmt::{self, write, DebugList};
 use std::hash::Hash;
 use std::ops::Index;
 
@@ -148,8 +148,28 @@ impl TyData {
 pub enum TyKind {
     Scalar(Scalar),
     Fn(Ty, Ty),
-    Var(TyVar),
+    Var(Debruijn),
     ForAll(Ty),
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub struct Debruijn(u32);
+
+impl Debruijn {
+    pub const INNER: Self = Self(0);
+
+    pub const fn new(index: u32) -> Self {
+        Self(index)
+    }
+
+    pub fn within(self, other: Self) -> bool {
+        self <= other
+    }
+
+    #[must_use]
+    pub fn shifted_in(self) -> Self {
+        Self(self.0 + 1)
+    }
 }
 
 impl fmt::Debug for TyKind {
@@ -158,14 +178,9 @@ impl fmt::Debug for TyKind {
             TyKind::Scalar(scalar) => write!(f, "{:?}", scalar),
             TyKind::Fn(l, r) => write!(f, "({:?} -> {:?})", l, r),
             TyKind::Var(var) => write!(f, "{:?}", var),
-            TyKind::ForAll(ty) => write!(f, "∀.{:?}", ty),
+            TyKind::ForAll(ty) => write!(f, "∀{:?}", ty),
         }
     }
-}
-
-#[derive(Debug, Hash, Clone, PartialEq, Eq)]
-pub struct TyVar {
-    pub name: Name,
 }
 
 impl TyKind {
@@ -174,7 +189,7 @@ impl TyKind {
     }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Scalar {
     Bool,
     Int,
