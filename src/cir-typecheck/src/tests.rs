@@ -42,9 +42,14 @@ fn test_typeck_type_application() {
     // what does it mean to have a type abstraction with no value abstraction? e.g. \@a.0
     assert_eq!(check_expr("(\\@a.\\x:a.x) @Int"), ty!(Int -> Int));
     assert_eq!(check_expr("(\\@a.\\@b.\\x:a.\\y:b.x) @Int @Bool"), ty!(Int -> Bool -> Int));
-    // TODO test partial app of type lambdas
 }
 
+#[test]
+fn test_typeck_partial_type_application() {
+    assert_eq!(check_expr("(\\@a.\\@b.\\x:a.\\y:b.x) @Int"), ty!(forall b. Int -> b -> Int));
+    // Check the names of forall binders are not meaningful for equality
+    assert_eq!(check_expr("(\\@a.\\@b.\\x:a.\\y:b.x) @Int"), ty!(forall a. Int -> a -> Int));
+}
 #[test]
 fn test_typeck_simple_app() {
     assert_eq!(check_expr("(\\x:Int.x) 5"), ty!(Int));

@@ -57,8 +57,6 @@ impl TypecheckCtxt {
                         cir::ExprData::Type(ty) => Ty::clone(&ty),
                         _ => todo!("expected type for type lambda"),
                     };
-                    dbg!(&body_ty);
-                    dbg!(&subst);
                     body_ty.substitute(&subst)
                 }
                 _ => todo!(),
