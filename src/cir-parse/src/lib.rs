@@ -112,7 +112,7 @@ peg::parser! {
         }
 
         // data Foo a b = Foo a | Bar b
-        pub rule data_def() -> DataDef = _ "data" _ name:uname() _ binders:(tyvar())* _ "=" _ variants:(variant() ++ "|") {
+        pub rule data_def() -> DataDef = _ "data" _ name:uname() _ binders:(tyvar())* _ "=" _ variants:(variant() ++ (_ "|" _)) {
             DataDef {
                 name,
                 binders,
