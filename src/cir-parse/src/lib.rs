@@ -64,9 +64,16 @@ peg::parser! {
             Name::new(s.span, s.node)
         }
 
-
         pub rule tyvar() -> TyVar = name:lname() {
             TyVar { name }
+        }
+
+        rule lpath() -> Path = name:lname() {
+            Path { name }
+        }
+
+        rule upath() -> Path = name:uname() {
+            Path { name }
         }
 
         pub rule var() -> Var = precedence! {
@@ -85,7 +92,18 @@ peg::parser! {
             "@" ty:ty() { Expr::Type(ty) }
             lit:literal() { Expr::Lit(lit) }
             name:lname() { Expr::Var(Var::Val { name }) }
+            "match" _ scrutinee:expr() _ "{" _ alts:alts() _ "}" { Expr::Case(Box::new(scrutinee), alts) }
         }
+
+        rule alts() -> Alts = alts:(alt() ++ ",") { alts }
+
+        rule alt() -> Alt = pat:pat() _ "->" _ body:expr() { Alt { pat, body } }
+
+        pub rule pat() -> Pat = variant_pat()
+
+        rule variant_pat() -> Pat = path:upath() {
+            Pat::Variant(path)
+         }
 
         pub rule expr() -> Expr = precedence! {
             f:(@) " " x:@ { Expr::App(Box::new(f), Box::new(x)) }

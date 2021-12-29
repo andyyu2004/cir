@@ -18,7 +18,21 @@ pub enum Expr {
     Lit(Literal),
     Lambda(Binder, Box<Expr>),
     App(Box<Expr>, Box<Expr>),
+    Case(Box<Expr>, Alts),
     Type(Type),
+}
+
+pub type Alts = Vec<Alt>;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct Alt {
+    pub pat: Pat,
+    pub body: Expr,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum Pat {
+    Variant(Path),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -77,6 +91,12 @@ pub struct ValueDef {
     pub name: Name,
     pub ty: Type,
     pub expr: Expr,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct Path {
+    // TODO paths are just a name for now
+    pub name: Name,
 }
 
 #[derive(Debug, PartialEq, Eq)]

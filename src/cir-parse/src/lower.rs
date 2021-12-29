@@ -99,7 +99,7 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
     }
 
     fn lower_expr(&mut self, expr: &ast::Expr) -> cir::Expr {
-        let expr = match &expr {
+        let expr = match expr {
             ast::Expr::Var(var) => self.lower_var_expr(var),
             ast::Expr::Lit(lit) => cir::ExprData::Lit(match lit.kind {
                 ast::LiteralKind::Int(i) => cir::Lit::Int(i),
@@ -110,12 +110,13 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
             }),
             ast::Expr::App(f, x) => cir::ExprData::App(self.lower_expr(f), self.lower_expr(x)),
             ast::Expr::Type(ty) => cir::ExprData::Type(self.lcx.lower_ty(ty)),
+            ast::Expr::Case(_, _) => todo!(),
         };
         self.exprs.alloc(expr)
     }
 
     fn lower_var_expr(&self, var: &ast::Var) -> cir::ExprData {
-        let binder = match self.lookup_var(&var) {
+        let binder = match self.lookup_var(var) {
             Some(binder) => binder,
             None => todo!("unbound var: {:?}", var),
         };

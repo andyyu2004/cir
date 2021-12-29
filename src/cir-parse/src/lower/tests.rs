@@ -40,7 +40,7 @@ fn test_lower_binders() -> anyhow::Result<()> {
         _ => panic!(),
     };
     let binder = &body.binders[binder];
-    assert_eq!(binder, &BinderData::Val(TyData::new(TyKind::Scalar(cir::Scalar::Int)).intern()));
+    assert_eq!(binder, &BinderData::Val(TyKind::Scalar(cir::Scalar::Int).intern()));
     Ok(())
 }
 
@@ -72,7 +72,7 @@ fn test_lower_binders_shadows() -> anyhow::Result<()> {
         _ => panic!(),
     };
     let binder = &body.binders[binder];
-    assert_eq!(binder, &BinderData::Val(TyData::new(TyKind::Scalar(cir::Scalar::Bool)).intern()));
+    assert_eq!(binder, &BinderData::Val(TyKind::Scalar(cir::Scalar::Bool).intern()));
 
     Ok(())
 }

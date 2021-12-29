@@ -1,4 +1,6 @@
-use cir::{Intern, Ty, TyData, TyKind};
+mod subst;
+
+use cir::{Ty, TyKind};
 use subst::Substitute;
 
 struct TypecheckCtxt {
@@ -39,7 +41,7 @@ impl TypecheckCtxt {
                 match self.binder(binder) {
                     cir::BinderData::Val(binder_ty) => {
                         let binder_ty = Ty::clone(binder_ty);
-                        TyData::new(TyKind::Fn(binder_ty, body_ty)).intern()
+                        TyKind::Fn(binder_ty, body_ty).intern()
                     }
                     cir::BinderData::Ty => TyKind::ForAll(body_ty).intern(),
                 }
@@ -54,7 +56,7 @@ impl TypecheckCtxt {
                 }
                 TyKind::ForAll(body_ty) => {
                     let subst = match &self.body[x] {
-                        cir::ExprData::Type(ty) => Ty::clone(&ty),
+                        cir::ExprData::Type(ty) => Ty::clone(ty),
                         _ => todo!("expected type for type lambda"),
                     };
                     body_ty.substitute(&subst)
@@ -66,6 +68,5 @@ impl TypecheckCtxt {
     }
 }
 
-mod subst;
 #[cfg(test)]
 mod tests;
