@@ -9,7 +9,7 @@ use la_arena::{Arena, Idx};
 #[derive(Debug, Default)]
 pub(crate) struct LowerCtxt {
     pub(crate) bodies: Arena<cir::BodyData>,
-    value_defs: Arena<cir::ValueDef>,
+    value_defs: Arena<cir::ValueDefData>,
     exprs: Arena<cir::ExprData>,
     foralls: Vec<cir::Name>,
 }
@@ -23,13 +23,17 @@ impl LowerCtxt {
     fn lower_item(&mut self, item: &ast::Item) -> cir::Item {
         match &item.kind {
             ast::ItemKind::ValueDef(def) => cir::Item::ValueDef(self.lower_value_def(def)),
-            ast::ItemKind::DataDef(_) => todo!(),
+            ast::ItemKind::DataDef(def) => cir::Item::DataDef(self.lower_data_def(def)),
         }
     }
 
-    fn lower_value_def(&mut self, value_def: &ast::ValueDef) -> Idx<cir::ValueDef> {
+    fn lower_data_def(&mut self, data_def: &ast::DataDef) -> cir::DataDef {
+        todo!()
+    }
+
+    fn lower_value_def(&mut self, value_def: &ast::ValueDef) -> cir::ValueDef {
         let ast::ValueDef { name, ty, expr } = value_def;
-        let value_def = cir::ValueDef {
+        let value_def = cir::ValueDefData {
             name: name.clone(),
             ty: self.lower_ty(ty),
             body: self.lower_body(expr),

@@ -19,13 +19,20 @@ pub struct Items {
     pub items: Vec<Item>,
 }
 
+pub type ValueDef = Idx<ValueDefData>;
+pub type DataDef = Idx<DataDefData>;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Item {
-    ValueDef(Idx<ValueDef>),
+    ValueDef(ValueDef),
+    DataDef(DataDef),
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct ValueDef {
+pub struct DataDefData {}
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct ValueDefData {
     pub name: Name,
     pub ty: Ty,
     pub body: Body,
