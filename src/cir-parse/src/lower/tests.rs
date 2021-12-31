@@ -1,4 +1,4 @@
-use cir::{BinderData, Expr, ExprData, Intern, TyData, TyKind};
+use cir::{BinderData, Expr, ExprData, TyKind};
 use la_arena::RawIdx;
 
 use crate::{parse_body, parse_ty};
@@ -7,7 +7,7 @@ use super::*;
 
 #[test]
 fn test_lower_program() -> anyhow::Result<()> {
-    let source = crate::cirparser::source_file("let x: Int = 1\nlet y: Bool = false")?;
+    let source = crate::cirparser::source_file("let x: Int = 1; let y: Bool = false;")?;
     let mut lcx = LowerCtxt::default();
     let file = lcx.lower_source_file(&source);
     assert_eq!(file.items.len(), 2);

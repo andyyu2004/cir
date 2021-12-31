@@ -156,9 +156,11 @@ peg::parser! {
             }
         }
 
-        pub rule item() -> Item = value_def_item() / data_def_item()
+        pub rule item() -> Item = item:(value_def_item() / data_def_item()) _ ";" _ {
+            item
+        }
 
-        pub rule source_file() -> SourceFile = _ items:(items:item())* {
+        pub rule source_file() -> SourceFile = _ items:item()* {
             SourceFile { items }
         }
     }

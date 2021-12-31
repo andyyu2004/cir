@@ -3,7 +3,7 @@ SourceFile {
         Item {
             span: Span {
                 start: ByteIndex(1),
-                end: ByteIndex(15),
+                end: ByteIndex(13),
             },
             kind: ValueDef(
                 ValueDef {

@@ -1,0 +1,64 @@
+SourceFile {
+    items: [
+        Item {
+            span: Span {
+                start: ByteIndex(0),
+                end: ByteIndex(10),
+            },
+            kind: DataDef(
+                DataDef {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(5),
+                            end: ByteIndex(6),
+                        },
+                        symbol: "T",
+                    },
+                    binders: [],
+                    variants: [
+                        Variant {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(9),
+                                    end: ByteIndex(10),
+                                },
+                                symbol: "T",
+                            },
+                            params: [],
+                        },
+                    ],
+                },
+            ),
+        },
+        Item {
+            span: Span {
+                start: ByteIndex(12),
+                end: ByteIndex(22),
+            },
+            kind: DataDef(
+                DataDef {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(17),
+                            end: ByteIndex(18),
+                        },
+                        symbol: "Y",
+                    },
+                    binders: [],
+                    variants: [
+                        Variant {
+                            name: Name {
+                                span: Span {
+                                    start: ByteIndex(21),
+                                    end: ByteIndex(22),
+                                },
+                                symbol: "Y",
+                            },
+                            params: [],
+                        },
+                    ],
+                },
+            ),
+        },
+    ],
+}

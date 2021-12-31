@@ -137,24 +137,31 @@ fn test_parse_ty_arrow() -> anyhow::Result<()> {
 #[test]
 fn test_parse_item() -> anyhow::Result<()> {
     expect_file!["tests/expect/item/value-def.ast"]
-        .assert_debug_eq(&cirparser::item(" let x: a = k ")?);
+        .assert_debug_eq(&cirparser::item(" let x: a = k ; ")?);
     Ok(())
 }
 
 #[test]
 fn test_parse_source_file() -> anyhow::Result<()> {
     expect_file!["tests/expect/file/value-defs.ast"]
-        .assert_debug_eq(&cirparser::source_file(" let x: a = k\n let y: b = g")?);
+        .assert_debug_eq(&cirparser::source_file(" let x: a = k; let y: b = g;")?);
     Ok(())
 }
 
 #[test]
 fn test_parse_data_def() -> anyhow::Result<()> {
     expect_file!["tests/expect/data/simple-data-def.ast"]
-        .assert_debug_eq(&cirparser::source_file("data T = A")?);
+        .assert_debug_eq(&cirparser::source_file("data T = A;")?);
     expect_file!["tests/expect/data/simple-data-def-multi-variant.ast"]
-        .assert_debug_eq(&cirparser::source_file("data T = A | B")?);
+        .assert_debug_eq(&cirparser::source_file("data T = A | B;")?);
     expect_file!["tests/expect/data/data-def-either.ast"]
-        .assert_debug_eq(&cirparser::source_file("data Either a b = Left a | Right b")?);
+        .assert_debug_eq(&cirparser::source_file("data Either a b = Left a | Right b;")?);
+    Ok(())
+}
+
+#[test]
+fn test_parse_path_ty() -> anyhow::Result<()> {
+    let src = r#"data T = T; data Y = Y;"#;
+    expect_file!["tests/expect/ty/path.ast"].assert_debug_eq(&cirparser::source_file(src)?);
     Ok(())
 }
