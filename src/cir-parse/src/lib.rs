@@ -90,9 +90,10 @@ peg::parser! {
             "(" expr:expr() ")" { expr }
             "\\" _ binder:binder() _ "." _ expr:expr() { Expr::Lambda(binder, Box::new(expr)) }
             "@" ty:ty() { Expr::Type(ty) }
-            lit:literal() { Expr::Lit(lit) }
-            name:lname() { Expr::Var(Var::Val { name }) }
             "match" _ scrutinee:expr() _ "{" _ alts:alts() _ "}" { Expr::Case(Box::new(scrutinee), alts) }
+            lit:literal() { Expr::Lit(lit) }
+            path:upath() { Expr::Path(path) }
+            name:lname() { Expr::Var(Var::Val { name }) }
         }
 
         rule alts() -> Alts = alts:(alt() ++ ",") { alts }
@@ -116,6 +117,7 @@ peg::parser! {
             "Int" { Type::Scalar(cir::Scalar::Int) }
             "forall" _ tyvar:tyvar() _ "." _ ty:ty() { Type::ForAll(tyvar, Box::new(ty)) }
             "(" ty:ty() ")" { ty }
+            path:upath() { Type::Path(path) }
             name:lname() { Type::Var(TyVar { name }) }
         }
 

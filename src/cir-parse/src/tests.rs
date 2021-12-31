@@ -160,8 +160,12 @@ fn test_parse_data_def() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_parse_path_ty() -> anyhow::Result<()> {
-    let src = r#"data T = T; data Y = Y;"#;
+fn test_parse_tycon_and_datacon_path_ref() -> anyhow::Result<()> {
+    let src = r#"
+        data T = T;
+        data Y = Y;
+        let t2y: T -> Y = \t:T.Y;
+    "#;
     expect_file!["tests/expect/ty/path.ast"].assert_debug_eq(&cirparser::source_file(src)?);
     Ok(())
 }

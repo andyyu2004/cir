@@ -2,15 +2,15 @@ SourceFile {
     items: [
         Item {
             span: Span {
-                start: ByteIndex(0),
-                end: ByteIndex(10),
+                start: ByteIndex(9),
+                end: ByteIndex(19),
             },
             kind: DataDef(
                 DataDef {
                     name: Name {
                         span: Span {
-                            start: ByteIndex(5),
-                            end: ByteIndex(6),
+                            start: ByteIndex(14),
+                            end: ByteIndex(15),
                         },
                         symbol: "T",
                     },
@@ -19,8 +19,8 @@ SourceFile {
                         Variant {
                             name: Name {
                                 span: Span {
-                                    start: ByteIndex(9),
-                                    end: ByteIndex(10),
+                                    start: ByteIndex(18),
+                                    end: ByteIndex(19),
                                 },
                                 symbol: "T",
                             },
@@ -32,15 +32,15 @@ SourceFile {
         },
         Item {
             span: Span {
-                start: ByteIndex(12),
-                end: ByteIndex(22),
+                start: ByteIndex(29),
+                end: ByteIndex(39),
             },
             kind: DataDef(
                 DataDef {
                     name: Name {
                         span: Span {
-                            start: ByteIndex(17),
-                            end: ByteIndex(18),
+                            start: ByteIndex(34),
+                            end: ByteIndex(35),
                         },
                         symbol: "Y",
                     },
@@ -49,14 +49,88 @@ SourceFile {
                         Variant {
                             name: Name {
                                 span: Span {
-                                    start: ByteIndex(21),
-                                    end: ByteIndex(22),
+                                    start: ByteIndex(38),
+                                    end: ByteIndex(39),
                                 },
                                 symbol: "Y",
                             },
                             params: [],
                         },
                     ],
+                },
+            ),
+        },
+        Item {
+            span: Span {
+                start: ByteIndex(49),
+                end: ByteIndex(73),
+            },
+            kind: ValueDef(
+                ValueDef {
+                    name: Name {
+                        span: Span {
+                            start: ByteIndex(53),
+                            end: ByteIndex(56),
+                        },
+                        symbol: "t2y",
+                    },
+                    ty: Fn(
+                        Path(
+                            Path {
+                                name: Name {
+                                    span: Span {
+                                        start: ByteIndex(58),
+                                        end: ByteIndex(59),
+                                    },
+                                    symbol: "T",
+                                },
+                            },
+                        ),
+                        Path(
+                            Path {
+                                name: Name {
+                                    span: Span {
+                                        start: ByteIndex(63),
+                                        end: ByteIndex(64),
+                                    },
+                                    symbol: "Y",
+                                },
+                            },
+                        ),
+                    ),
+                    expr: Lambda(
+                        Val(
+                            Name {
+                                span: Span {
+                                    start: ByteIndex(68),
+                                    end: ByteIndex(69),
+                                },
+                                symbol: "t",
+                            },
+                            Path(
+                                Path {
+                                    name: Name {
+                                        span: Span {
+                                            start: ByteIndex(70),
+                                            end: ByteIndex(71),
+                                        },
+                                        symbol: "T",
+                                    },
+                                },
+                            ),
+                        ),
+                        Path(
+                            Path {
+                                name: Name {
+                                    span: Span {
+                                        start: ByteIndex(72),
+                                        end: ByteIndex(73),
+                                    },
+                                    symbol: "Y",
+                                },
+                            },
+                        ),
+                    ),
                 },
             ),
         },

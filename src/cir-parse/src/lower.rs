@@ -45,6 +45,7 @@ impl LowerCtxt {
             // TODO not sure how to deal with var
             ast::Type::ForAll(var, ty) =>
                 self.in_forall(var, |lcx| cir::TyKind::ForAll(lcx.lower_ty(ty))),
+            ast::Type::Path(_) => todo!(),
         };
         kind.intern()
     }
@@ -111,6 +112,7 @@ impl<'lcx> BodyLowerCtxt<'lcx> {
             ast::Expr::App(f, x) => cir::ExprData::App(self.lower_expr(f), self.lower_expr(x)),
             ast::Expr::Type(ty) => cir::ExprData::Type(self.lcx.lower_ty(ty)),
             ast::Expr::Case(_, _) => todo!(),
+            ast::Expr::Path(_) => todo!(),
         };
         self.exprs.alloc(expr)
     }

@@ -19,6 +19,7 @@ pub enum Expr {
     Lambda(Binder, Box<Expr>),
     App(Box<Expr>, Box<Expr>),
     Case(Box<Expr>, Alts),
+    Path(Path),
     Type(Type),
 }
 
@@ -69,6 +70,7 @@ pub enum Var {
 #[derive(Debug, PartialEq, Eq)]
 pub enum Type {
     Var(TyVar),
+    Path(Path),
     Scalar(cir::Scalar),
     Fn(Box<Type>, Box<Type>),
     ForAll(TyVar, Box<Type>),
