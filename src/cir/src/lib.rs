@@ -149,6 +149,13 @@ impl TyData {
     pub fn kind(&self) -> &TyKind {
         &self.kind
     }
+
+    pub fn skip_binder(&self) -> Ty {
+        match self.kind() {
+            TyKind::ForAll(ty) => Ty::clone(ty),
+            _ => panic!("expected forall type"),
+        }
+    }
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]

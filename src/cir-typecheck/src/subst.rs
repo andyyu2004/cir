@@ -17,7 +17,7 @@ fn substitute_ty(ty: &Ty, subst: &Subst, cutoff: Debruijn) -> Ty {
         TyKind::Scalar(_) => Ty::clone(ty),
         TyKind::Fn(f, x) =>
             TyKind::Fn(substitute_ty(f, subst, cutoff), substitute_ty(x, subst, cutoff)).intern(),
-        TyKind::Var(debruijn) if *debruijn >= cutoff => subst.clone(),
+        TyKind::Var(debruijn) if *debruijn == cutoff => subst.clone(),
         TyKind::Var(_) => Ty::clone(ty),
         TyKind::ForAll(ty) =>
             TyKind::ForAll(substitute_ty(ty, subst, cutoff.shifted_in())).intern(),

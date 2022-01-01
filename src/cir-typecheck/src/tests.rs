@@ -1,5 +1,6 @@
 use cir::Ty;
 
+use crate::subst::Substitute;
 use crate::TypecheckCtxt;
 
 fn check_expr(s: &str) -> Ty {
@@ -60,4 +61,35 @@ fn test_typeck_simple_app() {
 #[test]
 fn test_typeck_higher_order_app() {
     assert_eq!(check_expr("(\\p:Int -> Bool.\\x:Int.p x) (\\x:Int.false) 0"), ty!(Bool));
+}
+
+#[test]
+fn test_higher_rank_app() {
+    assert_eq!(
+        check_expr("\\@a.\\f:(forall b. a -> b).\\x:a.x"),
+        ty!(forall a. (forall b. a -> b) -> a -> a)
+    );
+    assert_eq!(
+        check_expr("(\\@a.\\f:(forall b. a -> b).\\x:a.x) @Int"),
+        ty!((forall b. Int -> b) -> Int -> Int)
+    );
+
+    assert_eq!(check_expr("(\\@a.\\f:(forall b. b -> a).\\x:a.x) @Int (\\@b.\\y:b.0) 0"), ty!(Int));
+}
+
+#[test]
+fn test_subst() {
+    use cir_parse::parse_ty;
+    let ty = parse_ty("Int");
+    assert_eq!(ty.substitute(&ty!(Bool)), ty!(Int));
+
+    // // Skip the binder as `check_expr` chops off the forall before substituting
+    let ty = parse_ty("forall a. a -> a");
+    assert_eq!(ty.skip_binder().substitute(&ty!(Int)), ty!(Int -> Int));
+
+    let ty = parse_ty("forall a. forall b. a -> b -> a");
+    assert_eq!(ty.skip_binder().substitute(&ty!(Int)), ty!(forall b. Int -> b -> Int));
+
+    let ty = parse_ty("forall a. (forall b. a -> b) -> a");
+    assert_eq!(ty.skip_binder().substitute(&ty!(Int)), ty!((forall b. (Int -> b)) -> Int));
 }

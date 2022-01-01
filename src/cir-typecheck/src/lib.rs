@@ -1,6 +1,6 @@
 mod subst;
 
-use cir::{Ty, TyKind};
+use cir::{Debruijn, Ty, TyKind};
 use subst::Substitute;
 
 struct TypecheckCtxt {
